@@ -195,9 +195,12 @@
                     </tbody>
                     
                   </table>
+                  <div class="d-flex justify-content-center gap-5 align-items-center my-3 px-3">
+                    <div id="general-count" class="text-muted small"></div>
+                    <div id="general-pagination" class="d-flex"></div>
+                  </div>
                   <div class="loading-indicator text-center py-3 d-none" id="loading-general">Loading...</div>
                   <div class="no-results text-center py-3 d-none" id="no-results-general">No results found.</div>
-                  <div class="d-flex justify-content-center mt-3" id="general-pagination"></div>
 
                 </div>
               </div>
@@ -232,7 +235,10 @@
                     </tbody>
                     
                   </table>
-                  <div class="d-flex justify-content-center mt-3" id="admission-pagination"></div>
+                  <div class="d-flex justify-content-center gap-5 align-items-center my-3 px-3">
+                    <div id="admission-count" class="text-muted small"></div>
+                    <div id="admission-pagination" class="d-flex"></div>
+                  </div>
                   <div class="loading-indicator text-center py-3 d-none" id="loading-admission">Loading...</div>
                   <div class="no-results text-center py-3 d-none" id="no-results-admission">No results found.</div>
                 </div>
@@ -249,7 +255,6 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="inquiryModalLabel">Inquiry Details</h5>
-                  <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                 </div>
                 <div class="modal-body">
                   <p><strong>Name:</strong> <span id="modal-name"></span></p>
@@ -282,9 +287,7 @@
                 </div>
               </div>
             </div>
-          </div>          
-          
-
+          </div>
 
         </div>
       </div>
@@ -305,7 +308,7 @@
         const table = type === 'general' ? 'general_inquiries' : 'admission_inquiries'
         const search = document.querySelector(`input[oninput*="${type}"]`).value.toLowerCase()
         const filter = document.querySelector(`#filter-${type}`).value
-        const offset = (page[type] - 1) * 10
+        const offset = (page[type] - 1) * 5
 
         const loading = document.getElementById(`loading-${type}`)
         const noResults = document.getElementById(`no-results-${type}`)
@@ -316,10 +319,9 @@
         loading.classList.remove('d-none')
         noResults.classList.add('d-none')
     
-        let query = supabase.from(table).select('*', { count: 'exact' }).range(offset, offset + 9)
+        let query = supabase.from(table).select('*', { count: 'exact' }).range(offset, offset + 4)
     
         if (filter) {
-          // query = query.ilike('status', `%${filter}%`)
           query = query.eq('status', filter)
         }
     
@@ -327,7 +329,13 @@
           query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,subject.ilike.%${search}%`)
         }
     
-        const { data, count, error } = await query
+        let { data, count, error } = await query;
+
+        if (error && error.code === "PGRST103") {
+          // Reset to page 1 if the offset is too high
+          page[type] = 1;
+          return fetchInquiries(type);
+        }
 
         loading.classList.add('d-none')
     
@@ -336,14 +344,16 @@
           return
         }
 
+        renderPagination(count, type)
+        renderTable(data, type)
+
         if (!data || data.length === 0) {
           noResults.classList.remove('d-none')
           document.getElementById(`${type}-pagination`).innerHTML = ''
+          document.getElementById(`${type}-count`).classList.add("d-none");
           return
         }
-    
-        renderTable(data, type)
-        renderPagination(count, type)
+
       }
     
       function renderTable(data, type) {
@@ -372,15 +382,29 @@
           </tr>
         `).join('')
       }
-    
+
       function renderPagination(total, type) {
-        const totalPages = Math.ceil(total / 10)
-        let buttons = ''
+        const totalPages = Math.ceil(total / 5);
+        let buttons = '';
+
+        // Previous arrow
+        buttons += `<button class="btn btn-sm btn-outline-primary mx-1" ${page[type] === 1 ? 'disabled' : ''} onclick="goToPage('${type}', ${page[type] - 1})">&laquo;</button>`;
+
+        // Page number buttons
         for (let i = 1; i <= totalPages; i++) {
-          buttons += `<button class="btn btn-sm btn-outline-primary mx-1 ${page[type] === i ? 'active' : ''}" onclick="goToPage('${type}', ${i})">${i}</button>`
+          buttons += `<button class="btn btn-sm btn-outline-primary mx-1 ${page[type] === i ? 'active' : ''}" onclick="goToPage('${type}', ${i})">${i}</button>`;
         }
-    
-        document.getElementById(`${type}-pagination`).innerHTML = buttons
+
+        // Next arrow
+        buttons += `<button class="btn btn-sm btn-outline-primary mx-1" ${page[type] === totalPages ? 'disabled' : ''} onclick="goToPage('${type}', ${page[type] + 1})">&raquo;</button>`;
+
+        // Show count like "10 of 25"
+        const end = Math.min(page[type] * 5, total);
+        const countText = `${end} of ${total}`;
+        document.getElementById(`${type}-count`).classList.remove("d-none");
+        document.getElementById(`${type}-count`).innerText = "Showing " + countText;
+
+        document.getElementById(`${type}-pagination`).innerHTML = buttons;
       }
     
       window.goToPage = function (type, num) {
@@ -468,9 +492,6 @@
         const toast = new bootstrap.Toast(toastEl)
         toast.show()
       }
-
-
-
 
     </script>
     
