@@ -166,82 +166,83 @@
           <div class="content-wrapper">
 
             <div class="container-xxl flex-grow-1 container-p-y">
+
+               <div class="card mb-4">
+                <h5 class="card-header">Create News or Announcement</h5>
+                <div class="card-body">
+                  <form id="newsForm">
+                    <div class="mb-3">
+                      <label for="newsImage" class="form-label">Image URL</label>
+                      <input type="text" class="form-control" id="newsImage" placeholder="Enter image URL" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="newsTitle" class="form-label">Title</label>
+                      <input type="text" class="form-control" id="newsTitle" placeholder="Enter title" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="newsDescription" class="form-label">Description</label>
+                      <textarea class="form-control" id="newsDescription" rows="3" placeholder="Enter description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="newsDate" class="form-label">Date</label>
+                      <input type="date" class="form-control" id="newsDate" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                </div>
+              </div>
               
               <div class="card">
-                <h5 class="card-header">General</h5>
+                <h5 class="card-header">News and Announcements</h5>
                 <div class="table-responsive text-center">
                   <div class="d-flex justify-content-between align-items-center px-3 py-2">
-                    <input type="text" class="form-control w-50 me-3" placeholder="Search..." oninput="fetchInquiries('general')">
-                    <select class="form-select w-auto" onchange="fetchInquiries('general')" id="filter-general">
-                      <option value="">All</option>
-                      <option value="read">Read</option>
-                      <option value="unread">Unread</option>
-                      <option value="replied">Replied</option>
-                    </select>
+                    <input type="text" class="form-control w-50 me-3" placeholder="Search..." oninput="fetchNews()" id="news-search">
                   </div>
-                  
-                  <table class="table" id="general-table">
+                  <table class="table" id="news-table">
                     <thead class="table-light">
                       <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Subject</th>
-                        <th>Status</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody class="table-border-bottom-0">
-                      
-                    </tbody>
-                    
+                    <tbody class="table-border-bottom-0"></tbody>
                   </table>
-                  <div class="loading-indicator text-center py-3 d-none" id="loading-general">Loading...</div>
-                  <div class="no-results text-center py-3 d-none" id="no-results-general">No results found.</div>
-                  <!-- <div class="d-flex justify-content-center my-4" id="general-pagination"></div> -->
                   <div class="d-flex justify-content-center gap-5 align-items-center my-3 px-3">
-                    <div id="general-count" class="text-muted small"></div>
-                    <div id="general-pagination" class="d-flex"></div>
+                    <div id="news-count" class="text-muted small"></div>
+                    <div id="news-pagination" class="d-flex"></div>
                   </div>
+                  <div class="loading-indicator text-center py-3 d-none" id="loading-news">Loading...</div>
+                  <div class="no-results text-center py-3 d-none" id="no-results-news">No results found.</div>
                 </div>
               </div>
 
               <hr class="my-5" />
 
               <div class="card">
-                <h5 class="card-header">Admission Inquiries</h5>
-                <div class="table-responsive text-nowrap">
+                <h5 class="card-header">Archived News</h5>
+                <div class="table-responsive text-center">
                   <div class="d-flex justify-content-between align-items-center px-3 py-2">
-                    <input type="text" class="form-control w-50 me-3" placeholder="Search..." oninput="fetchInquiries('admission')">
-                    <select class="form-select w-auto" onchange="fetchInquiries('admission')" id="filter-admission">
-                      <option value="">All</option>
-                      <option value="read">Read</option>
-                      <option value="unread">Unread</option>
-                      <option value="replied">Replied</option>
-                    </select>
+                    <input type="text" class="form-control w-50 me-3" placeholder="Search..." oninput="fetchArchivedNews()" id="archived-search">
                   </div>
-                  
-                  <table class="table text-center" id="admission-table">
+                  <table class="table" id="archived-table">
                     <thead class="table-light">
                       <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Subject</th>
-                        <th>Status</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody class="table-border-bottom-1">
-                      
-                    </tbody>
-                    
+                    <tbody class="table-border-bottom-0"></tbody>
                   </table>
-                  <div class="d-flex justify-content-between align-items-center mt-3 px-3">
-                    <div id="admission-count" class="text-muted small"></div>
-                    <div id="admission-pagination" class="d-flex"></div>
+                  <div class="d-flex justify-content-center gap-5 align-items-center my-3 px-3">
+                    <div id="archived-count" class="text-muted small"></div>
+                    <div id="archived-pagination" class="d-flex"></div>
                   </div>
-                  <!-- <div class="d-flex justify-content-center mt-3" id="admission-pagination"></div> -->
-                  <div class="loading-indicator text-center py-3 d-none" id="loading-admission">Loading...</div>
-                  <div class="no-results text-center py-3 d-none" id="no-results-admission">No results found.</div>
+                  <div class="loading-indicator text-center py-3 d-none" id="loading-archived">Loading...</div>
+                  <div class="no-results text-center py-3 d-none" id="no-results-archived">No results found.</div>
                 </div>
               </div>
 
@@ -301,17 +302,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
+    <!-- <script>
       const supabaseUrl = 'https://kpqqmdewmtbbdjykkrny.supabase.co'
       const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwcXFtZGV3bXRiYmRqeWtrcm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NjQ3NzEsImV4cCI6MjA2ODU0MDc3MX0.OAVzofMuM6ZdD6-r2c_IYT9ZE77SHlgTNVXKtwBZvl0'
       const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
     
       let page = { general: 1, admission: 1 }
     
-      async function fetchInquiries(type) {
-        const table = type === 'general' ? 'general_inquiries' : 'admission_inquiries'
-        const search = document.querySelector(`input[oninput*="${type}"]`).value.toLowerCase()
-        const filter = document.querySelector(`#filter-${type}`).value
+      async function fetchInquiries() {
+        // const table = type === 'general' ? 'general_inquiries' : 'admission_inquiries'
+        // const search = document.querySelector(`input[oninput*="${type}"]`).value.toLowerCase()
+        // const filter = document.querySelector(`#filter-${type}`).value
         const offset = (page[type] - 1) * 5
 
         const loading = document.getElementById(`loading-${type}`)
@@ -323,15 +324,14 @@
         loading.classList.remove('d-none')
         noResults.classList.add('d-none')
     
-        let query = supabase.from(table).select('*', { count: 'exact' }).range(offset, offset + 4)
+        let query = supabase.from("news&announcements").select('*', { count: 'exact' }).range(offset, offset + 4)
     
-        if (filter) {
-          // query = query.ilike('status', `%${filter}%`)
-          query = query.eq('status', filter)
-        }
+        // if (filter) {
+        //   query = query.eq('status', filter)
+        // }
     
         if (search) {
-          query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,subject.ilike.%${search}%`)
+          query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
         }
     
         const { data, count, error } = await query
@@ -354,30 +354,71 @@
       }
     
       function renderTable(data, type) {
-        const tbody = document.querySelector(`#${type}-table tbody`)
-        tbody.innerHTML = data.map(row => `
-          <tr>
-            <td><strong>${row.name}</strong></td>
-            <td>${row.email}</td>
-            <td>${row.subject}</td>
-            <td><span class="badge bg-label-${getStatusColor(row.status)}">${capitalize(row.status)}</span></td>
-            <td>
-              <div class="dropdown">
-                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                  <i class="bx bx-dots-vertical-rounded"></i>
-                </button>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" href="javascript:void(0);" onclick="viewInquiry('${type}', ${row.id})">
-                    <i class="bx bx-show me-1"></i> View
-                  </a>
-                  <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="deleteInquiry('${type}', ${row.id})">
-                    <i class="bx bx-trash me-1"></i> Delete
-                  </a>
+        // const tbody = document.querySelector(`#${type}-table tbody`)
+
+        // tbody.innerHTML = data.map(row => `
+        //   <tr>
+        //     <td><strong>${row.name}</strong></td>
+        //     <td>${row.email}</td>
+        //     <td>${row.subject}</td>
+        //     <td><span class="badge bg-label-${getStatusColor(row.status)}">${capitalize(row.status)}</span></td>
+        //     <td>
+        //       <div class="dropdown">
+        //         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+        //           <i class="bx bx-dots-vertical-rounded"></i>
+        //         </button>
+        //         <div class="dropdown-menu">
+        //           <a class="dropdown-item" href="javascript:void(0);" onclick="viewInquiry('${type}', ${row.id})">
+        //             <i class="bx bx-show me-1"></i> View
+        //           </a>
+        //           <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="deleteInquiry('${type}', ${row.id})">
+        //             <i class="bx bx-trash me-1"></i> Delete
+        //           </a>
+        //         </div>
+        //       </div>
+        //     </td>
+        //   </tr>
+        // `).join('')
+
+        const newsTable = document.getElementById('newsTableBody');
+        const archiveTable = document.getElementById('archiveTableBody');
+
+        data.forEach((news, index) => {
+          const tableRow = `
+            <tr>
+              <td><img src="${news.image}" width="50" class="me-2" /> <strong>${news.title}</strong></td>
+              <td>${news.title}</td>
+              <td>${news.description}</td>
+              <td>${news.date}</td>
+              <td>
+                <div class="dropdown">
+                  <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item view-news" href="javascript:void(0);" onclick="viewNews(${news.id})">
+                      <i class="bx bx-show me-1"></i> View
+                    </a>
+                    <a class="dropdown-item delete-news" href="javascript:void(0);" onclick="deleteNews(${news.id})">
+                      <i class="bx bx-trash me-1"></i> Delete
+                    </a>
+                    <a class="dropdown-item archive-news" href="javascript:void(0);" onclick="deleteNews('${type}', ${row.id})">
+                      <i class="bx bx-archive-in me-1"></i> Archive
+                    </a>
+                  </div>
+
                 </div>
-              </div>
-            </td>
-          </tr>
-        `).join('')
+              </td>
+            </tr>
+          `;
+
+          if (!news.archive) {
+            newsTable.innerHTML += tableRow;
+          } else {
+            archiveTable.innerHTML += tableRow;
+          }
+        });
+        
       }
 
       function renderPagination(total, type) {
@@ -419,9 +460,7 @@
         return str.charAt(0).toUpperCase() + str.slice(1)
       }
     
-      // Initial fetch
-      fetchInquiries('general')
-      fetchInquiries('admission')
+      fetchInquiries()
 
       window.viewInquiry = async function (type, id) {
         const table = type === 'general' ? 'general_inquiries' : 'admission_inquiries'
@@ -492,10 +531,148 @@
         toast.show()
       }
 
-    </script>
+    </script> -->
     
     
+    <script>
+      const supabaseUrl = 'https://kpqqmdewmtbbdjykkrny.supabase.co'
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwcXFtZGV3bXRiYmRqeWtrcm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NjQ3NzEsImV4cCI6MjA2ODU0MDc3MX0.OAVzofMuM6ZdD6-r2c_IYT9ZE77SHlgTNVXKtwBZvl0'
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+      
+      let newsPage = { news: 1, archived: 1 }
 
+      async function fetchNews() {
+        await fetchNewsData('news', false);
+      }
+
+      async function fetchArchivedNews() {
+        await fetchNewsData('archived', true);
+      }
+
+      async function fetchNewsData(type, isArchived) {
+        const searchInput = document.getElementById(`${type}-search`).value.toLowerCase();
+        const offset = (newsPage[type] - 1) * 5;
+        const loading = document.getElementById(`loading-${type}`);
+        const noResults = document.getElementById(`no-results-${type}`);
+        const tbody = document.querySelector(`#${type}-table tbody`);
+        const archiveValue = isArchived;
+
+        tbody.innerHTML = '';
+        loading.classList.remove('d-none');
+        noResults.classList.add('d-none');
+
+        let query = supabase
+          .from('news&announcements')
+          .select('*', { count: 'exact' })
+          .eq('archive', archiveValue)
+          .range(offset, offset + 4)
+          .order('date', { ascending: false });
+
+        if (searchInput) {
+          query = query.or(`title.ilike.%${searchInput}%,description.ilike.%${searchInput}%`);
+        }
+
+        let { data, count, error } = await query;
+
+        if (error && error.code === "PGRST103") {
+          newsPage[type] = 1;
+          return fetchNewsData(type, isArchived);
+        }
+
+        loading.classList.add('d-none');
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        renderNewsTable(data, type);
+        renderNewsPagination(count, type);
+
+        if (!data || data.length === 0) {
+          noResults.classList.remove('d-none');
+          document.getElementById(`${type}-pagination`).innerHTML = '';
+          document.getElementById(`${type}-count`).classList.add("d-none");
+        }
+      }
+
+      function renderNewsTable(data, type) {
+        const tbody = document.querySelector(`#${type}-table tbody`);
+        tbody.innerHTML = data.map(row => `
+          <tr>
+            <td><strong>${row.title}</strong></td>
+            <td>${row.description}</td>
+            <td>${new Date(row.date).toLocaleDateString()}</td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="javascript:void(0);" onclick="viewNews(${row.id})">
+                    <i class="bx bx-show me-1"></i> View
+                  </a>
+                  ${type === 'news' ? `<a class="dropdown-item text-warning" href="javascript:void(0);" onclick="archiveNews(${row.id})">
+                    <i class="bx bx-archive-in me-1"></i> Archive
+                  </a>` : ''}
+                </div>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      function renderNewsPagination(total, type) {
+        const totalPages = Math.ceil(total / 5);
+        let buttons = '';
+
+        buttons += `<button class="btn btn-sm btn-outline-primary mx-1" ${newsPage[type] === 1 ? 'disabled' : ''} onclick="changeNewsPage('${type}', ${newsPage[type] - 1})">&laquo;</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          buttons += `<button class="btn btn-sm btn-outline-primary mx-1 ${newsPage[type] === i ? 'active' : ''}" onclick="changeNewsPage('${type}', ${i})">${i}</button>`;
+        }
+        buttons += `<button class="btn btn-sm btn-outline-primary mx-1" ${newsPage[type] === totalPages ? 'disabled' : ''} onclick="changeNewsPage('${type}', ${newsPage[type] + 1})">&raquo;</button>`;
+
+        const end = Math.min(newsPage[type] * 5, total);
+        const countText = `${end} of ${total}`;
+        document.getElementById(`${type}-count`).classList.remove("d-none");
+        document.getElementById(`${type}-count`).innerText = "Showing " + countText;
+
+        document.getElementById(`${type}-pagination`).innerHTML = buttons;
+      }
+
+      window.changeNewsPage = function (type, num) {
+        newsPage[type] = num;
+        type === 'news' ? fetchNews() : fetchArchivedNews();
+      }
+
+      window.viewNews = function (id) {
+        // Add logic to show full details in modal if needed
+        alert("Viewing news ID: " + id);
+      }
+
+      window.archiveNews = async function (id) {
+        const { error } = await supabase.from('news_announcements').update({ archive: true }).eq('id', id);
+        if (error) {
+          alert("Failed to archive news.");
+          return;
+        }
+        fetchNews();
+        showToast("News archived successfully.");
+      }
+
+      function showToast(message) {
+        const toastEl = document.getElementById('deleteToast')
+        const toastBody = document.getElementById('deleteToastBody')
+        toastBody.innerText = message
+        const toast = new bootstrap.Toast(toastEl)
+        toast.show()
+      }
+
+      // Initial fetch
+      fetchNews();
+      fetchArchivedNews();
+
+    </script>
 
     <script src="../assets/vendor/libs/jquery/jquery.js"></script>
     <script src="../assets/vendor/libs/popper/popper.js"></script>
