@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="assets/"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Web-Portal Admin | News and Announcements</title>
+    <meta name="description" content="" />
+
+    <link rel="icon" type="image/x-icon" href="assets/img/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/config.js"></script>
+
+    <style>
+      .swal2-container {
+        z-index: 20000 !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="index.html" class="app-brand-link">
+              <img src="assets/img/logo.png" alt="logo" class="rounded-circle" style="width:60px;height:60px;object-fit:cover;">
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">Web-Portal</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <li class="menu-item ">
+              <a href="/" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-message-detail"></i>
+                <div data-i18n="Tables">Inquiries</div>
+              </a>
+            </li>
+            <li class="menu-item active">
+              <a href="news&announcements.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-news"></i>
+                <div data-i18n="Tables">News & Announcements</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="admission.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-book-content"></i>
+                <div data-i18n="Tables">Admissions</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="student_life.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-happy"></i>
+                <div data-i18n="Tables">Student Life</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="faculty&staff.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-group"></i>
+                <div data-i18n="Tables">Faculty & Staff</div>
+              </a>
+            </li>
+          </ul>
+        </aside>
+
+        <div class="layout-page">
+
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+              <div class="navbar-nav align-items-center">
+                <h5 class="card-header">College of Business Administration</h5>
+              </div>
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <li class="nav-item dropdown"></li>
+                  <a href="" class="nav-link">visit site</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bx bx-bell bx-sm"></i>
+                    <span id="notification-count" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
+                    <li class="dropdown-header">Notifications</li>
+                    <div id="notification-list">
+                      <li class="dropdown-item text-muted small">No new inquiries</li>
+                    </div>
+                  </ul>
+                </li>
+
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <i class="menu-icon tf-icons bx bx-user w-px-40 h-auto rounded-circle" style="font-size: 2rem;" ></i>
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-online">
+                              <i class="menu-icon tf-icons bx bx-user" style="font-size: 2rem;"></i>
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block" id="username"></span>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li><div class="dropdown-divider"></div></li>
+                    <li>
+                      <a class="dropdown-item" href="profile.html"><i class="bx bx-user me-2"></i> <span class="align-middle">My Profile</span></a>
+                    </li>
+                    <li><div class="dropdown-divider"></div></li>
+                    <li>
+                      <button class="dropdown-item" onclick="signOut()"><i class="bx bx-power-off me-2"></i> <span class="align-middle">Log Out</span></button>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <div class="content-wrapper">
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+
+               <div class="card mb-4">
+                <h5 class="card-header">Create News or Announcement</h5>
+                <div class="card-body">
+                  <form id="newsForm">
+                    <div class="mb-3">
+                      <label for="newsImage" class="form-label">Image URL</label>
+                      <input type="file" accept="image/*" class="form-control" id="newsImage" placeholder="Enter image URL" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="newsTitle" class="form-label">Title</label>
+                      <input type="text" class="form-control" id="newsTitle" placeholder="Enter title" required />
+                    </div>
+                    <div class="mb-3">
+                      <label for="newsDescription" class="form-label">Description</label>
+                      <textarea class="form-control" id="newsDescription" rows="3" placeholder="Enter description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="newsDate" class="form-label">Date</label>
+                      <input type="date" class="form-control" id="newsDate" required />
+                    </div>
+                    <button type="submit" class="btn btn-success" id="create-news-submit-btn">
+                      <span class="spinner-border spinner-border-sm d-none me-2" id="create-news-spinner" role="status" aria-hidden="true"></span>
+                      Submit
+                    </button>
+                  </form>
+                </div>
+              </div>
+              
+              <div class="card">
+                <h5 class="card-header">News and Announcements</h5>
+                <div class="table-responsive text-center" style="overflow: visible;">
+                  <div class="d-flex justify-content-between align-items-center px-3 py-2">
+                    <input type="text" class="form-control w-50 me-3" placeholder="Search..." oninput="fetchNews()" id="news-search">
+                  </div>
+                  <table class="table" id="news-table">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0"></tbody>
+                  </table>
+                  <div class="d-flex justify-content-center gap-5 align-items-center my-3 px-3">
+                    <div id="news-count" class="text-muted small"></div>
+                    <div id="news-pagination" class="d-flex"></div>
+                  </div>
+                  <div class="loading-indicator text-center py-3 d-none" id="loading-news">Loading...</div>
+                  <div class="no-results text-center py-3 d-none" id="no-results-news">No results found.</div>
+                </div>
+              </div>
+
+              <hr class="my-5" />
+
+              <div class="card">
+                <h5 class="card-header">Archived News</h5>
+                <div class="table-responsive text-center" style="overflow: visible;">
+                  <div class="d-flex justify-content-between align-items-center px-3 py-2">
+                    <input type="text" class="form-control w-50 me-3" placeholder="Search..." oninput="fetchArchivedNews()" id="archived-search">
+                  </div>
+                  <table class="table" id="archived-table">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0"></tbody>
+                  </table>
+                  <div class="d-flex justify-content-center gap-5 align-items-center my-3 px-3">
+                    <div id="archived-count" class="text-muted small"></div>
+                    <div id="archived-pagination" class="d-flex"></div>
+                  </div>
+                  <div class="loading-indicator text-center py-3 d-none" id="loading-archived">Loading...</div>
+                  <div class="no-results text-center py-3 d-none" id="no-results-archived">No results found.</div>
+                </div>
+              </div>
+
+              <hr class="my-5" />
+            </div>
+
+            <div class="content-backdrop fade"></div>
+          </div>
+
+          <div class="modal fade" id="editNewsModal" tabindex="-1" aria-labelledby="editNewsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header btn-success text-white">
+                  <h5 class="modal-title" id="editNewsModalLabel">Edit News</h5>
+                </div>
+                <div class="modal-body">
+                  <form id="editNewsForm">
+                    <input type="hidden" id="edit-news-id">
+                    <div class="mb-3">
+                      <label for="edit-news-image" class="form-label">Image</label>
+                      <input class="form-control" type="file" id="edit-news-image" accept="image/*">
+                      <label for="edit-news-preview" class="form-label mt-2">Current Image</label>
+                      <div >
+                        <img id="edit-news-preview" src="" alt="Current Image" class="img-fluid rounded" style="max-height: 200px;">
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="edit-news-title" class="form-label">Title</label>
+                      <input type="text" class="form-control" id="edit-news-title" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="edit-news-description" class="form-label">Description</label>
+                      <textarea class="form-control" id="edit-news-description" rows="4" required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-success" id="edit-news-submit-btn">
+                        <span class="spinner-border spinner-border-sm d-none me-2" id="edit-news-spinner" role="status" aria-hidden="true"></span>
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+            <div id="deleteToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                <div class="toast-body" id="deleteToastBody">
+                  Action completed successfully.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="viewNewsModal" tabindex="-1" aria-labelledby="viewNewsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header btn-success text-white">
+                  <h5 class="modal-title" id="viewNewsModalLabel">News Details</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <h4 id="modal-news-title" class="fw-bold mb-2"></h4>
+                  <p class="text-muted mb-2" id="modal-news-date"></p>
+                  <p id="modal-news-description" class="mb-3"></p>
+                  <div id="modal-news-image-container" class="text-center d-none">
+                    <img id="modal-news-image" src="assets/img/backgrounds/18.jpg" class="img-fluid rounded" alt="News Image">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="deleteNewsModal" tabindex="-1" aria-labelledby="deleteNewsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header bg-danger text-white d-flex justify-content-center">
+                  <h5 class="modal-title" id="deleteNewsModalLabel" style="color:white">Confirm Delete</h5>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to permanently delete this news item? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-danger" id="confirmDeleteNewsBtn">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const supabaseUrl = 'https://kpqqmdewmtbbdjykkrny.supabase.co'
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwcXFtZGV3bXRiYmRqeWtrcm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NjQ3NzEsImV4cCI6MjA2ODU0MDc3MX0.OAVzofMuM6ZdD6-r2c_IYT9ZE77SHlgTNVXKtwBZvl0'
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      // checking session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          document.getElementById("username").textContent = session.user.email;
+          console.log("User is signed in:", session.user.email);
+        } else {
+          console.log("No active session");
+          window.location.href = "login.html";
+        }
+      });
+
+      // checking user if restricted
+      async function userStatus(){
+        const { data: { user } } = await supabase.auth.getUser();
+
+        const { data: profile, error } = await supabase
+          .from("users")
+          .select("restricted")
+          .eq("id", user.id)
+          .single();
+
+          if (profile?.restricted) {
+            Swal.fire({
+              icon: "info",
+              title: "Notice!!!",
+              text: "Your account has been restricted. Contact admin.",
+              timer: 4000,
+              showConfirmButton: true,
+              timerProgressBar: true,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+              willClose: async () => {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                  console.error("Sign out error:", error.message);
+                  Swal.fire("Sign out failed", error.message, "error");
+                } else {
+                  window.location.href = "login.html";
+                }
+              }
+            });
+          }
+      }
+      userStatus();
+      
+      let newsPage = { news: 1, archived: 1 }
+
+      async function fetchNews() {
+        await fetchNewsData('news', false);
+      }
+
+      async function fetchArchivedNews() {
+        await fetchNewsData('archived', true);
+      }
+
+      async function fetchNewsData(type, isArchived) {
+        const searchInput = document.getElementById(`${type}-search`).value.toLowerCase();
+        const offset = (newsPage[type] - 1) * 5;
+        const loading = document.getElementById(`loading-${type}`);
+        const noResults = document.getElementById(`no-results-${type}`);
+        const tbody = document.querySelector(`#${type}-table tbody`);
+        const archiveValue = isArchived;
+
+        tbody.innerHTML = '';
+        loading.classList.remove('d-none');
+        noResults.classList.add('d-none');
+
+        let query = supabase
+          .from('news&announcements')
+          .select('*', { count: 'exact' })
+          .eq('archive', archiveValue)
+          .range(offset, offset + 4)
+          .order('date', { ascending: false });
+
+        if (searchInput) {
+          query = query.or(`title.ilike.%${searchInput}%,description.ilike.%${searchInput}%`);
+        }
+
+        let { data, count, error } = await query;
+
+        if (error && error.code === "PGRST103") {
+          newsPage[type] = 1;
+          return fetchNewsData(type, isArchived);
+        }
+
+        loading.classList.add('d-none');
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        if (data && data.length === 0 && newsPage[type] > 1) {
+          newsPage[type] -= 1;
+          return fetchNewsData(type, isArchived);
+        }
+
+        renderNewsTable(data, type);
+        renderNewsPagination(count, type);
+
+        if (!data || data.length === 0) {
+          noResults.classList.remove('d-none');
+          document.getElementById(`${type}-pagination`).innerHTML = '';
+          document.getElementById(`${type}-count`).classList.add("d-none");
+        }
+      }
+
+      const newsForm = document.getElementById('newsForm');
+      newsForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('create-news-submit-btn');
+        const spinner = document.getElementById('create-news-spinner');
+
+        // Show loading
+        submitBtn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        const title = document.getElementById('newsTitle').value;
+        const description = document.getElementById('newsDescription').value;
+        const date = document.getElementById('newsDate').value;
+        const file = document.getElementById("newsImage").files[0];
+
+        let image_url = null;
+
+        const bucketName = "news-image";
+        const filePath = `admin/assets/${Date.now()}_${file.name}`;
+
+        const { data, error: errorStorage } = await supabase.storage
+          .from(bucketName)
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (errorStorage) {
+          alert("Image upload failed: " + errorStorage.message);
+          return;
+        }
+
+        const { data: publicURL } = supabase.storage
+          .from(bucketName)
+          .getPublicUrl(filePath);
+
+        image_url = publicURL.publicUrl;
+
+        const { error } = await supabase.from('news&announcements').insert([
+          { image: image_url, title, description, date },
+        ]);
+
+        if (error) {
+          alert('Error creating news: ' + error.message);
+        } else {
+          newsForm.reset();
+          fetchNews();
+        }
+
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+      });
+
+      function truncateText(text, maxLength) {
+        if (!text) return '';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+      }
+
+      function renderNewsTable(data, type) {
+        const tbody = document.querySelector(`#${type}-table tbody`);
+        tbody.innerHTML = data.map(row => `
+          <tr>
+            <td><strong>${row.title}</strong></td>
+            <td>${truncateText(row.description, 50)}</td>
+            <td>${new Date(row.date).toLocaleDateString()}</td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="javascript:void(0);" onclick="viewNews(${row.id})">
+                    <i class="bx bx-show me-1"></i> View
+                  </a>
+                  ${type === 'news' ? `<a class="dropdown-item text-warning" href="javascript:void(0);" onclick="archiveNews(${row.id})">
+                    <i class="bx bx-archive-in me-1"></i> Archive
+                  </a>` : ''}
+                  ${type === 'archived' ? `
+                  <a class="dropdown-item text-success" href="javascript:void(0);" onclick="unarchiveNews(${row.id})">
+                    <i class="bx bx-archive-out me-1"></i> Unarchive
+                  </a>` : ''}
+                  <a class="dropdown-item" href="javascript:void(0);" onclick="editNews(${row.id})">
+                    <i class="bx bx-edit-alt me-1"></i> Edit
+                  </a>
+                  <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="confirmDelete('${type}', ${row.id}, '${row.image}')">
+                    <i class="bx bx-trash me-1"></i> Delete
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      function renderNewsPagination(total, type) {
+        const totalPages = Math.ceil(total / 5);
+        let buttons = '';
+
+        buttons += `<button class="btn btn-sm btn-outline-success mx-1" ${newsPage[type] === 1 ? 'disabled' : ''} onclick="changeNewsPage('${type}', ${newsPage[type] - 1})">&laquo;</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          buttons += `<button class="btn btn-sm btn-outline-success mx-1 ${newsPage[type] === i ? 'active' : ''}" onclick="changeNewsPage('${type}', ${i})">${i}</button>`;
+        }
+        buttons += `<button class="btn btn-sm btn-outline-success mx-1" ${newsPage[type] === totalPages ? 'disabled' : ''} onclick="changeNewsPage('${type}', ${newsPage[type] + 1})">&raquo;</button>`;
+
+        const end = Math.min(newsPage[type] * 5, total);
+        const countText = `${end} of ${total}`;
+        document.getElementById(`${type}-count`).classList.remove("d-none");
+        document.getElementById(`${type}-count`).innerText = "Showing " + countText;
+
+        document.getElementById(`${type}-pagination`).innerHTML = buttons;
+      }
+
+      window.changeNewsPage = function (type, num) {
+        newsPage[type] = num;
+        type === 'news' ? fetchNews() : fetchArchivedNews();
+      }
+
+      window.viewNews = function (id) {
+        // Add logic to show full details in modal if needed
+        alert("Viewing news ID: " + id);
+      }
+
+      window.archiveNews = async function (id) {
+        const { error } = await supabase.from('news&announcements').update({ archive: true }).eq('id', id);
+        if (error) {
+          alert("Failed to archive news.");
+          return;
+        }
+        fetchNews();
+        fetchArchivedNews();
+        showToast("News archived successfully.");
+      }
+
+      function showToast(message) {
+        const toastEl = document.getElementById('deleteToast')
+        const toastBody = document.getElementById('deleteToastBody')
+        toastBody.innerText = message
+        const toast = new bootstrap.Toast(toastEl)
+        toast.show()
+      }
+
+      // Initial fetch
+      fetchNews();
+      fetchArchivedNews();
+
+      // archiving news
+
+      window.unarchiveNews = async function (id) {
+        const { error } = await supabase
+          .from('news&announcements')
+          .update({ archive: false })
+          .eq('id', id);
+
+        if (error) {
+          console.error("Failed to unarchive news:", error);
+          alert("Failed to unarchive news.");
+          return;
+        }
+
+        // Refresh both lists
+        fetchArchivedNews(); // remove from archive list
+        fetchNews();         // optionally show in news list
+
+        showToast("News unarchived successfully.");
+      }
+
+      // viewing news
+
+      window.viewNews = async function (id) {
+        const { data, error } = await supabase
+          .from('news&announcements')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          console.error("Failed to fetch news:", error);
+          alert("Failed to load news details.");
+          return;
+        }
+
+        // Populate modal with data
+        document.getElementById('modal-news-title').innerText = data.title || 'Untitled';
+        document.getElementById('modal-news-date').innerText = new Date(data.date).toLocaleString();
+        document.getElementById('modal-news-description').innerText = data.description || '';
+
+        // Optional image handling
+        if (data.image) {
+          document.getElementById('modal-news-image-container').classList.remove('d-none');
+          document.getElementById('modal-news-image').src = data.image;
+        } else {
+          document.getElementById('modal-news-image-container').classList.add('d-none');
+        }
+
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('viewNewsModal'));
+        modal.show();
+      }
+
+      // updating news
+
+      window.editNews = async function (id) {
+
+        const { data, error } = await supabase
+          .from('news&announcements')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          alert("Failed to load news for editing.");
+          return;
+        }
+
+        document.getElementById('edit-news-preview').src = data.image || '';
+        document.getElementById('edit-news-image').value = ''; // reset file input
+        document.getElementById('edit-news-id').value = data.id;
+        document.getElementById('edit-news-title').value = data.title || '';
+        document.getElementById('edit-news-description').value = data.description || '';
+
+        const modal = new bootstrap.Modal(document.getElementById('editNewsModal'));
+        modal.show();
+      };
+
+      document.getElementById('editNewsForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('edit-news-submit-btn');
+        const spinner = document.getElementById('edit-news-spinner');
+
+        // Show loading
+        submitBtn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        const updatedData = {
+          id: document.getElementById('edit-news-id').value,
+          title: document.getElementById('edit-news-title').value.trim(),
+          description: document.getElementById('edit-news-description').value.trim(),
+        };
+
+        const file = document.getElementById("edit-news-image").files[0];
+        if (file) {
+          const filePath = `admin/assets/${Date.now()}_${file.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from("news-image")
+            .upload(filePath, file, {
+              cacheControl: "3600",
+              upsert: true,
+            });
+
+          if (uploadError) {
+            console.error("Upload failed:", uploadError.message);
+            return;
+          }
+
+          const { data: publicURL } = supabase.storage
+            .from("news-image")
+            .getPublicUrl(filePath);
+
+          updatedData.image = publicURL.publicUrl;
+        }
+
+        if (document.getElementById('edit-news-preview').src) {
+          deleteImage(document.getElementById('edit-news-preview').src);
+        }
+
+        const { error } = await supabase
+          .from('news&announcements')
+          .update(updatedData)
+          .eq('id', updatedData.id);
+
+        if (error) {
+          alert("Failed to update news.");
+          return;
+        }
+
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+
+        // Close modal and refresh
+        bootstrap.Modal.getInstance(document.getElementById('editNewsModal')).hide();
+        fetchNews();          // refresh normal table
+        fetchArchivedNews();  // refresh archived table
+        showToast("News updated successfully.");
+      });
+
+      async function deleteImage(imagePath) {
+        if (imagePath) {
+          const imagePathSplit = getImagePathFromUrl(imagePath);
+
+          const { error: storageError } = await supabase.storage
+            .from("news-image")
+            .remove([imagePathSplit]);
+
+          if (storageError) {
+            console.log("Error deleting image:", storageError.message);
+          } else {
+            console.log("Image deleted successfully.");
+          }
+        }
+      }
+
+      function getImagePathFromUrl(url) {
+        const prefix = "/storage/v1/object/public/news-image/";
+        const parts = url.split(prefix);
+        return parts.length > 1 ? parts[1] : null;
+      }
+
+      //deleting news
+      let deleteTarget = { id: null, type: '' };
+
+      window.confirmDelete = function (type, id, image_url) {
+        deleteTarget = { id, type, image_url };
+        const modal = new bootstrap.Modal(document.getElementById('deleteNewsModal'));
+        modal.show();
+      }
+
+      document.getElementById('confirmDeleteNewsBtn').addEventListener('click', async () => {
+        const { id, type, image_url } = deleteTarget;
+
+        const { error } = await supabase.from('news&announcements').delete().eq('id', id);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteNewsModal'));
+        modal.hide();
+
+        if (error) {
+          console.error(error);
+          alert("Failed to delete news.");
+          return;
+        }
+
+        deleteImage(image_url);
+
+        // Refresh the correct list
+        if (type === 'news') {
+          fetchNews();
+        } else {
+          fetchArchivedNews();
+        }
+
+        showToast("News deleted successfully.");
+      });
+
+      // notifications
+
+      const notificationCount = document.getElementById("notification-count");
+      const notificationList = document.getElementById("notification-list");
+
+      let unreadGeneral = [];
+      let unreadAdmission = [];
+
+      async function fetchNotifications() {
+        // Fetch General Inquiries (unread only)
+        const { data: general, error: genError } = await supabase
+          .from("general_inquiries")
+          .select("id, name, subject, created_at")
+          .eq("notification_status", "unread")
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (genError) console.error("General Inquiries Error:", genError.message);
+        unreadGeneral = general || [];
+
+        // Fetch Admission Inquiries (unread only)
+        const { data: admission, error: admError } = await supabase
+          .from("admission_inquiries")
+          .select("id, name, subject, created_at")
+          .eq("notification_status", "unread")
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (admError) console.error("Admission Inquiries Error:", admError.message);
+        unreadAdmission = admission || [];
+
+        // Merge & sort
+        const allInquiries = [...unreadGeneral, ...unreadAdmission]
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 8);
+
+        // Update badge
+        const totalUnread = allInquiries.length;
+        notificationCount.textContent = totalUnread;
+        notificationCount.style.display = totalUnread > 0 ? "inline-block" : "none";
+
+        // Update list
+        notificationList.innerHTML = "";
+        if (totalUnread === 0) {
+          notificationList.innerHTML = `<li class="dropdown-item text-muted small">No new inquiries</li>`;
+        } else {
+          allInquiries.forEach(item => {
+            const li = document.createElement("li");
+            li.classList.add("dropdown-item");
+            li.innerHTML = `
+              <div>
+                <strong>${item.name}</strong> - ${item.subject}<br>
+                <small class="text-muted">${new Date(item.created_at).toLocaleString()}</small>
+              </div>`;
+            notificationList.appendChild(li);
+          });
+        }
+      }
+
+      // ✅ Mark notifications as read when dropdown opened
+      async function markNotificationsAsRead() {
+        try {
+          if (unreadGeneral.length > 0) {
+            const ids = unreadGeneral.map(n => n.id);
+            await supabase
+              .from("general_inquiries")
+              .update({ notification_status: "read" })
+              .in("id", ids);
+          }
+
+          if (unreadAdmission.length > 0) {
+            const ids = unreadAdmission.map(n => n.id);
+            await supabase
+              .from("admission_inquiries")
+              .update({ notification_status: "read" })
+              .in("id", ids);
+          }
+
+          // Clear badge
+          notificationCount.textContent = "";
+          notificationCount.style.display = "none";
+
+          // Reset cached unread
+          unreadGeneral = [];
+          unreadAdmission = [];
+        } catch (err) {
+          console.error("Error marking notifications as read:", err);
+        }
+      }
+
+      // Initial load
+      fetchNotifications();
+
+      // 🔄 Poll every 30 seconds
+      setInterval(fetchNotifications, 30000);
+
+      // ✅ Realtime subscriptions
+      supabase
+        .channel('general-inquiries-changes')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'general_inquiries' }, fetchNotifications)
+        .subscribe();
+
+      supabase
+        .channel('admission-inquiries-changes')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'admission_inquiries' }, fetchNotifications)
+        .subscribe();
+
+      // 👀 Mark as read when dropdown is opened
+      document.addEventListener("DOMContentLoaded", () => {
+        const dropdownEl = document.querySelector('[data-bs-toggle="dropdown"][id="notificationDropdown"]');
+        dropdownEl?.addEventListener("show.bs.dropdown", markNotificationsAsRead);
+      });
+
+      async function signOut() {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error("Sign out error:", error.message);
+          Swal.fire("Sign out failed", error.message, "error");
+        } else {
+          console.log("Signed out successfully");
+          window.location.href = "login.html";
+        }
+      }
+
+    </script>
+
+    <script src="assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="assets/vendor/libs/popper/popper.js"></script>
+    <script src="assets/vendor/js/bootstrap.js"></script>
+    <script src="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="assets/vendor/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+
+  </body>
+</html>

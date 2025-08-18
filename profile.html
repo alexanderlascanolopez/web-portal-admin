@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="assets/"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Web-Portal Admin | Profile</title>
+
+    <meta name="description" content="" />
+    <link rel="icon" type="image/x-icon" href="assets/img/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/config.js"></script>
+
+    <style>
+      .swal2-container {
+        z-index: 20000 !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="index.html" class="app-brand-link">
+              <img src="assets/img/logo.png" alt="logo" class="rounded-circle" style="width:60px;height:60px;object-fit:cover;">
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">Web-Portal</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <li class="menu-item ">
+              <a href="/" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-message-detail"></i>
+                <div data-i18n="Tables">Inquiries</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="news&announcements.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-news"></i>
+                <div data-i18n="Tables">News & Announcements</div>
+              </a>
+            </li>
+            <li class="menu-item ">
+              <a href="admission.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-book-content"></i>
+                <div data-i18n="Tables">Admissions</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="student_life.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-happy"></i>
+                <div data-i18n="Tables">Student Life</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="faculty&staff.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-group"></i>
+                <div data-i18n="Tables">Faculty & Staff</div>
+              </a>
+            </li>
+          </ul>
+        </aside>
+
+        <div class="layout-page">
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+              <div class="navbar-nav align-items-center">
+                <h5 class="card-header">College of Business Administration</h5>
+              </div>
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <li class="nav-item dropdown"></li>
+                  <a href="" class="nav-link">visit site</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bx bx-bell bx-sm"></i>
+                    <span id="notification-count" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
+                    <li class="dropdown-header">Notifications</li>
+                    <div id="notification-list">
+                      <li class="dropdown-item text-muted small">No new inquiries</li>
+                    </div>
+                  </ul>
+                </li>
+
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <i class="menu-icon tf-icons bx bx-user w-px-40 h-auto rounded-circle" style="font-size: 2rem;" ></i>
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-online">
+                              <i class="menu-icon tf-icons bx bx-user" style="font-size: 2rem;"></i>
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block" id="username"></span>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+
+                    <li><div class="dropdown-divider"></div></li>
+                    <li class="">
+                      <a class="dropdown-item active" href="profile.html
+                      "><i class="bx bx-user me-2"></i> <span class="align-middle">My Profile</span></a>
+                    </li>
+                    <li><div class="dropdown-divider"></div></li>
+                    <li>
+                      <button class="dropdown-item" onclick="signOut()"><i class="bx bx-power-off me-2"></i> <span class="align-middle">Log Out</span></button>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </nav>
+
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            <div class="card mb-4">
+              <h5 class="card-header">My Profile</h5>
+              <div class="card-body">
+                <form id="profile-form" onsubmit="updateProfile(event)">
+                  <div class="mb-3">
+                    <label for="profile-email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="profile-email" disabled>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="profile-password" class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="profile-password" placeholder="Enter new password">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="profile-confirm-password" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="profile-confirm-password" placeholder="Confirm new password">
+                  </div>
+
+                  <button type="submit" class="btn btn-success" id="profile-submit-btn">
+                    <span class="spinner-border spinner-border-sm d-none me-2" id="profile-spinner" role="status" aria-hidden="true"></span>
+                    Update Profile
+                  </button>
+                  <div id="profile-message" class="mt-3 small"></div>
+                </form>
+
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <h5 class="card-header">Manage Users</h5>
+              <div class="card-body">
+                <form id="add-user-form" onsubmit="addUser(event)">
+                  <div class="mb-3">
+                    <label for="user-email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="user-email" placeholder="Enter user email" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="user-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="user-password" placeholder="Enter password" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="user-confirm-password" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="user-confirm-password" placeholder="Enter password" required>
+                  </div>
+
+                  <button type="submit" class="btn btn-success" id="user-submit-btn">
+                    <span class="spinner-border spinner-border-sm d-none me-2" id="user-spinner" role="status" aria-hidden="true"></span>
+                    Add User
+                  </button>
+                  <div id="user-message" class="mt-3 small"></div>
+                </form>
+
+              </div>
+            </div>
+
+            <div class="card">
+              <h5 class="card-header">User List</h5>
+              <div class="table-responsive text-center">
+                <table class="table table-striped" id="users-table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-table-body">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+
+        <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <form id="edit-user-form" onsubmit="updateUser(event)">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit User</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <input type="hidden" id="edit-user-id">
+                  <div class="mb-3">
+                    <label for="edit-user-email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="edit-user-email" required disabled>
+                  </div>
+                  <div class="mb-3">
+                    <label for="edit-user-status" class="form-label">Status</label>
+                    <select class="form-control" id="edit-user-status" required>
+                      <option selected disabled>Select</option>
+                      <option value="false">Active</option>
+                      <option value="true">Restricted</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const supabaseUrl = 'https://kpqqmdewmtbbdjykkrny.supabase.co'
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwcXFtZGV3bXRiYmRqeWtrcm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NjQ3NzEsImV4cCI6MjA2ODU0MDc3MX0.OAVzofMuM6ZdD6-r2c_IYT9ZE77SHlgTNVXKtwBZvl0'
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      // checking session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          document.getElementById("username").textContent = session.user.email;
+          console.log("User is signed in:", session.user.email);
+        } else {
+          console.log("No active session");
+          window.location.href = "login.html";
+        }
+      });
+
+      // checking user if restricted
+      async function userStatus(){
+        const { data: { user } } = await supabase.auth.getUser();
+
+        const { data: profile, error } = await supabase
+          .from("users")
+          .select("restricted")
+          .eq("id", user.id)
+          .single();
+
+          if (profile?.restricted) {
+            Swal.fire({
+              icon: "info",
+              title: "Notice!!!",
+              text: "Your account has been restricted. Contact admin.",
+              timer: 4000,
+              showConfirmButton: true,
+              timerProgressBar: true,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+              willClose: async () => {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                  console.error("Sign out error:", error.message);
+                  Swal.fire("Sign out failed", error.message, "error");
+                } else {
+                  window.location.href = "login.html";
+                }
+              }
+            });
+          }
+      }
+      userStatus();
+
+      async function signOut() {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error("Sign out error:", error.message);
+          Swal.fire("Sign out failed", error.message, "error");
+        } else {
+          console.log("Signed out successfully");
+          window.location.href = "login.html";
+        }
+      }
+
+      // notifications
+
+      const notificationCount = document.getElementById("notification-count");
+      const notificationList = document.getElementById("notification-list");
+
+      let unreadGeneral = [];
+      let unreadAdmission = [];
+
+      async function fetchNotifications() {
+        // Fetch General Inquiries (unread only)
+        const { data: general, error: genError } = await supabase
+          .from("general_inquiries")
+          .select("id, name, subject, created_at")
+          .eq("notification_status", "unread")
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (genError) console.error("General Inquiries Error:", genError.message);
+        unreadGeneral = general || [];
+
+        // Fetch Admission Inquiries (unread only)
+        const { data: admission, error: admError } = await supabase
+          .from("admission_inquiries")
+          .select("id, name, subject, created_at")
+          .eq("notification_status", "unread")
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (admError) console.error("Admission Inquiries Error:", admError.message);
+        unreadAdmission = admission || [];
+
+        // Merge & sort
+        const allInquiries = [...unreadGeneral, ...unreadAdmission]
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 8);
+
+        // Update badge
+        const totalUnread = allInquiries.length;
+        notificationCount.textContent = totalUnread;
+        notificationCount.style.display = totalUnread > 0 ? "inline-block" : "none";
+
+        // Update list
+        notificationList.innerHTML = "";
+        if (totalUnread === 0) {
+          notificationList.innerHTML = `<li class="dropdown-item text-muted small">No new inquiries</li>`;
+        } else {
+          allInquiries.forEach(item => {
+            const li = document.createElement("li");
+            li.classList.add("dropdown-item");
+            li.innerHTML = `
+              <div>
+                <strong>${item.name}</strong> - ${item.subject}<br>
+                <small class="text-muted">${new Date(item.created_at).toLocaleString()}</small>
+              </div>`;
+            notificationList.appendChild(li);
+          });
+        }
+      }
+
+      // ✅ Mark notifications as read when dropdown opened
+      async function markNotificationsAsRead() {
+        try {
+          if (unreadGeneral.length > 0) {
+            const ids = unreadGeneral.map(n => n.id);
+            await supabase
+              .from("general_inquiries")
+              .update({ notification_status: "read" })
+              .in("id", ids);
+          }
+
+          if (unreadAdmission.length > 0) {
+            const ids = unreadAdmission.map(n => n.id);
+            await supabase
+              .from("admission_inquiries")
+              .update({ notification_status: "read" })
+              .in("id", ids);
+          }
+
+          // Clear badge
+          notificationCount.textContent = "";
+          notificationCount.style.display = "none";
+
+          // Reset cached unread
+          unreadGeneral = [];
+          unreadAdmission = [];
+        } catch (err) {
+          console.error("Error marking notifications as read:", err);
+        }
+      }
+
+      // Initial load
+      fetchNotifications();
+
+      // 🔄 Poll every 30 seconds
+      setInterval(fetchNotifications, 30000);
+
+      // ✅ Realtime subscriptions
+      supabase
+        .channel('general-inquiries-changes')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'general_inquiries' }, fetchNotifications)
+        .subscribe();
+
+      supabase
+        .channel('admission-inquiries-changes')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'admission_inquiries' }, fetchNotifications)
+        .subscribe();
+
+      // 👀 Mark as read when dropdown is opened
+      document.addEventListener("DOMContentLoaded", () => {
+        const dropdownEl = document.querySelector('[data-bs-toggle="dropdown"][id="notificationDropdown"]');
+        dropdownEl?.addEventListener("show.bs.dropdown", markNotificationsAsRead);
+      });
+
+      // Fetch user email when page loads
+      document.addEventListener("DOMContentLoaded", async () => {
+        const { data: { user }, error } = await supabase.auth.getUser()
+
+        if (error) {
+          document.getElementById("profile-message").textContent = "Error fetching user."
+          return
+        }
+        if (user) {
+          document.getElementById("profile-email").value = user.email
+        }
+      })
+
+      // Update profile function
+      async function updateProfile(event) {
+        event.preventDefault()
+
+        const submitBtn = document.getElementById('profile-submit-btn');
+        const spinner = document.getElementById('profile-spinner');
+
+        // Show loading
+        submitBtn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        const password = document.getElementById("profile-password").value
+        const confirmPassword = document.getElementById("profile-confirm-password").value
+        const messageEl = document.getElementById("profile-message")
+
+        if (password && password !== confirmPassword) {
+          messageEl.textContent = "Passwords do not match."
+          messageEl.classList.add("btn-color-secondary")
+          submitBtn.disabled = false;
+          spinner.classList.add('d-none');
+          return
+        }
+
+        if (password) {
+          const { error } = await supabase.auth.updateUser({ password })
+          if (error) {
+            messageEl.textContent = "Error updating password: " + error.message
+            messageEl.classList.add("btn-color-secondary")
+          } else {
+            messageEl.textContent = "Password updated successfully!"
+            messageEl.classList.remove("btn-color-secondary")
+            messageEl.classList.add("btn-color-primary")
+            document.getElementById("profile-password").value = ""
+            document.getElementById("profile-confirm-password").value = ""
+          }
+        } else {
+          messageEl.classList.add("btn-color-primary")
+          messageEl.textContent = "Nothing to update."
+        }
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+      }
+
+      const usersTableBody = document.getElementById("users-table-body");
+      const userMessage = document.getElementById("user-message");
+
+      // 🚀 Load users from app_users table
+      async function loadUsers() {
+        usersTableBody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
+
+        const { data, error } = await supabase.from("users").select("*").order("created_at", { ascending: false });
+
+        if (error) {
+          console.error(error);
+          usersTableBody.innerHTML = "<tr><td colspan='3'>Failed to load users</td></tr>";
+          return;
+        }
+
+        const { data: { user }, error2 } = await supabase.auth.getUser()
+
+        usersTableBody.innerHTML = "";
+        data.forEach((curUser) => {
+          const restricted = curUser.restricted ? "Restricted" : "Active";
+
+          const row = `
+            <tr>
+              <td>${curUser.email}</td>
+              <td>${restricted}</td>
+              <td>
+                ${ curUser.email !== user.email ? `<button class="btn btn-sm btn-warning" onclick="toggleRestriction('${curUser.id}', ${curUser.restricted ? "false" : "true"})">
+                  ${ curUser.restricted ? "Unrestrict" : "Restrict" }
+                </button>` : ""}
+              </td>
+            </tr>
+          `;
+          usersTableBody.insertAdjacentHTML("beforeend", row);
+        });
+      }
+
+      // ➕ Add User
+      async function addUser(event) {
+        event.preventDefault();
+
+        const submitBtn = document.getElementById('user-submit-btn');
+        const spinner = document.getElementById('user-spinner');
+
+        // Show loading
+        submitBtn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        const email = document.getElementById("user-email").value;
+        const password = document.getElementById("user-password").value;
+        const confirmPassword = document.getElementById("user-confirm-password").value;
+
+        if (password !== confirmPassword) {
+          userMessage.innerHTML = `<span class="text-danger">Passwords do not match!</span>`;
+          submitBtn.disabled = false;
+          spinner.classList.add('d-none');
+          return;
+        }
+
+        // 1. Sign up user via Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+        if (authError) {
+          userMessage.innerHTML = `<span class="text-danger">${authError.message}</span>`;
+          submitBtn.disabled = false;
+          spinner.classList.add('d-none');
+          return;
+        }
+
+        // 2. Insert user into a separate database table (frontend safe)
+        const { error: dbError } = await supabase.from("users").insert([
+          {
+            id: authData.user.id,   // store same UUID as auth
+            email: email,
+            restricted: false
+          }
+        ]);
+
+        if (dbError) {
+          userMessage.innerHTML = `<span class="text-danger">Auth OK but DB insert failed: ${dbError.message}</span>`;
+
+          submitBtn.disabled = false;
+          spinner.classList.add('d-none');
+        } else {
+          userMessage.innerHTML = `<span class="text-success">User added successfully!</span>`;
+          document.getElementById("add-user-form").reset();
+          loadUsers();
+        }
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+      }
+
+      window.toggleRestriction = async function (id, restrict) {
+        const { error } = await supabase.from("users").update({ restricted: restrict }).eq("id", id);
+
+        if (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+            confirmButtonText: 'Try Again'
+          });
+        } else {
+          Swal.fire({
+              icon: "info",
+              title: "Notice!!!",
+              text: `User ${restrict ? "restricted" : "unrestricted"} successfully!`,
+              timer: 4000,
+              showConfirmButton: true,
+              timerProgressBar: true,
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+          loadUsers();
+        }
+      };
+
+      // Initial load
+      loadUsers();
+
+      // Expose functions
+      window.addUser = addUser;
+    </script>
+
+    <script src="assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="assets/vendor/libs/popper/popper.js"></script>
+    <script src="assets/vendor/js/bootstrap.js"></script>
+    <script src="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="assets/vendor/js/menu.js"></script>
+    <script src="assets/js/main.js"></script>
+
+  </body>
+</html>
