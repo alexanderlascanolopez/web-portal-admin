@@ -391,6 +391,8 @@
 
         if (errorStorage) {
           alert("Image upload failed: " + errorStorage.message);
+          submitBtn.disabled = false;
+          spinner.classList.add('d-none');
           return;
         }
 
@@ -404,6 +406,8 @@
         if (error) {
           console.error(error);
           alert("Error adding Event");
+          submitBtn.disabled = false;
+          spinner.classList.add('d-none');
           return;
         }
         eventForm.reset();
