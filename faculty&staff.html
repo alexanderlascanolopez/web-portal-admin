@@ -170,7 +170,7 @@
 
                 <div class="p-3">
                   <form id="faculty-form">
-                    <div class="row g-2">
+                    <div class="row g-2 mb-2">
                       <div class="col-md-3">
                         <input type="text" id="faculty-name" class="form-control" placeholder="Full Name" required />
                       </div>
@@ -185,10 +185,22 @@
                         </select>
                       </div>
                       <div class="col-md-3">
-                        <input type="file" id="faculty-profile" class="form-control" accept="image/*" placeholder="Image" required />
+                        <input type="file" id="faculty-profile" class="form-control" accept="image/*" required />
                       </div>
                       <div class="col-md-3">
-                        <button type="submit" class="btn btn-success" id="create-faculty-submit-btn">
+                        <input type="email" id="faculty-email" class="form-control" placeholder="Email Address" required />
+                      </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                      <div class="col-md-3">
+                        <input type="tel" id="faculty-phone" class="form-control" placeholder="Phone Number" required />
+                      </div>
+                      <div class="col-md-6">
+                        <input type="text" id="faculty-address" class="form-control" placeholder="Address" required />
+                      </div>
+                      <div class="col-md-3">
+                        <button type="submit" class="btn btn-success w-100" id="create-faculty-submit-btn">
                           <span class="spinner-border spinner-border-sm d-none me-2" id="create-faculty-spinner" role="status" aria-hidden="true"></span>
                           Add Faculty
                         </button>
@@ -204,6 +216,9 @@
                         <th>Profile</th>
                         <th>Name</th>
                         <th>Position</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -212,6 +227,7 @@
                   </table>
                 </div>
               </div>
+
 
               <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
                 <div id="deleteToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -241,6 +257,18 @@
                         <div class="mb-3">
                           <label class="form-label">Position</label>
                           <input type="text" id="edit-faculty-position" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label">Email</label>
+                          <input type="text" id="edit-faculty-email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label">Phone Number</label>
+                          <input type="text" id="edit-faculty-phone" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label">Address</label>
+                          <input type="text" id="edit-faculty-address" class="form-control" required />
                         </div>
                         <div class="mb-3">
                           <label class="form-label">Profile Image (Leave blank to keep current)</label>
@@ -357,13 +385,16 @@
               </td>
               <td>${faculty.name}</td>
               <td>${faculty.position}</td>
+              <td>${faculty.email}</td>
+              <td>${faculty.phone}</td>
+              <td>${faculty.address}</td>
               <td>
                 <div class="dropdown">
                   <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);" onclick="showEditModal(${faculty.id}, '${faculty.name}', '${faculty.position}', '${faculty.image}')">
+                    <a class="dropdown-item" href="javascript:void(0);" onclick="showEditModal(${faculty.id}, '${faculty.name}', '${faculty.position}', '${faculty.email}', '${faculty.phone}', '${faculty.address}', '${faculty.image}')">
                       <i class="bx bx-edit-alt me-1"></i> Edit
                     </a>
                     <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="showDeleteModal(${faculty.id}, '${faculty.name}', '${faculty.image}')">
@@ -390,7 +421,9 @@
 
         const name = document.getElementById("faculty-name").value;
         const position = document.getElementById("faculty-position").value;
-        // const profile = document.getElementById("faculty-profile").value;
+        const email = document.getElementById("faculty-email").value;
+        const phone = document.getElementById("faculty-phone").value;
+        const address = document.getElementById("faculty-address").value;
         const file = document.getElementById("faculty-profile").files[0];
 
         let image_url = null;
@@ -416,14 +449,18 @@
 
         image_url = publicURL.publicUrl;
 
-        const { error } = await supabase.from("faculty&staff").insert([{ name, position, image: image_url }]);
+        const { error } = await supabase.from("faculty&staff").insert([{ name, position, email, phone, address, image: image_url }]);
         if (error) {
           console.error(error);
           alert("Error adding faculty");
           return;
         }
-        facultyForm.reset();
-        loadFaculty();
+
+        if (data && !error) {
+          facultyForm.reset();
+          loadFaculty();
+        }
+        
 
         submitBtn.disabled = false;
         spinner.classList.add('d-none');
@@ -483,12 +520,15 @@
 
       // deleting facultys
 
-      function showEditModal(id, name, position, image_url) {
+      function showEditModal(id, name, position, email, phone, address, image_url) {
         image = image_url;
 
         document.getElementById("edit-faculty-id").value = id;
         document.getElementById("edit-faculty-name").value = name;
         document.getElementById("edit-faculty-position").value = position;
+        document.getElementById("edit-faculty-email").value = email;
+        document.getElementById("edit-faculty-phone").value = phone;
+        document.getElementById("edit-faculty-address").value = address;
         document.getElementById("edit-faculty-profile").value = "";
         new bootstrap.Modal(document.getElementById("editModal")).show();
       }
@@ -508,12 +548,15 @@
         const id = document.getElementById("edit-faculty-id").value;
         const name = document.getElementById("edit-faculty-name").value;
         const position = document.getElementById("edit-faculty-position").value;
+        const email = document.getElementById("edit-faculty-email").value;
+        const phone = document.getElementById("edit-faculty-phone").value;
+        const address = document.getElementById("edit-faculty-address").value;
         const file = document.getElementById("edit-faculty-profile").files[0];
 
         let profileUrl = null;
         if (file) profileUrl = await uploadImage(file);
 
-        const updateData = { name, position };
+        const updateData = { name, position, email, phone, address };
         if (profileUrl) updateData.image = profileUrl;
 
         submitBtn.disabled = false;

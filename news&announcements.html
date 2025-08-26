@@ -170,21 +170,38 @@
                 <div class="card-body">
                   <form id="newsForm">
                     <div class="mb-3">
-                      <label for="newsImage" class="form-label">Image URL</label>
-                      <input type="file" accept="image/*" class="form-control" id="newsImage" placeholder="Enter image URL" required />
+                      <label for="newsImage" class="form-label">Image (Optional)</label>
+                      <input type="file" accept="image/*" class="form-control" id="newsImage"/>
                     </div>
+
                     <div class="mb-3">
                       <label for="newsTitle" class="form-label">Title</label>
                       <input type="text" class="form-control" id="newsTitle" placeholder="Enter title" required />
                     </div>
+
                     <div class="mb-3">
                       <label for="newsDescription" class="form-label">Description</label>
                       <textarea class="form-control" id="newsDescription" rows="3" placeholder="Enter description" required></textarea>
                     </div>
+
                     <div class="mb-3">
                       <label for="newsDate" class="form-label">Date</label>
                       <input type="date" class="form-control" id="newsDate" required />
                     </div>
+
+                    <!-- === Major Select Dropdown === -->
+                    <div class="mb-3">
+                      <label for="newsMajor" class="form-label">Major (Optional)</label>
+                      <select class="form-select" id="newsMajor">
+                        <option value="" disabled selected>Select a Major</option>
+                        <option value="human resources management">Human Resources Management</option>
+                        <option value="marketing management">Marketing Management</option>
+                        <option value="financial management">Financial Management</option>
+                        <option value="business economics">Business Economics</option>
+                        <option value="all">All</option>
+                      </select>
+                    </div>
+
                     <button type="submit" class="btn btn-success" id="create-news-submit-btn">
                       <span class="spinner-border spinner-border-sm d-none me-2" id="create-news-spinner" role="status" aria-hidden="true"></span>
                       Submit
@@ -192,6 +209,7 @@
                   </form>
                 </div>
               </div>
+
               
               <div class="card">
                 <h5 class="card-header">News and Announcements</h5>
@@ -315,7 +333,7 @@
                   <p class="text-muted mb-2" id="modal-news-date"></p>
                   <p id="modal-news-description" class="mb-3"></p>
                   <div id="modal-news-image-container" class="text-center d-none">
-                    <img id="modal-news-image" src="assets/img/backgrounds/18.jpg" class="img-fluid rounded" alt="News Image">
+                    <img id="modal-news-image" src="" class="img-fluid rounded" alt="News Image">
                   </div>
                 </div>
               </div>
@@ -475,33 +493,35 @@
         const title = document.getElementById('newsTitle').value;
         const description = document.getElementById('newsDescription').value;
         const date = document.getElementById('newsDate').value;
+        let major = document.getElementById('newsMajor').value == "" ? "all" : document.getElementById('newsMajor').value;
         const file = document.getElementById("newsImage").files[0];
 
         let image_url = null;
 
-        const bucketName = "news-image";
-        const filePath = `admin/assets/${Date.now()}_${file.name}`;
-
-        const { data, error: errorStorage } = await supabase.storage
+        if(file){
+          const bucketName = "news-image";
+          const filePath = `admin/assets/${Date.now()}_${file.name}`;
+          const { data, error: errorStorage } = await supabase.storage
           .from(bucketName)
           .upload(filePath, file, {
             cacheControl: "3600",
             upsert: false,
           });
 
-        if (errorStorage) {
-          alert("Image upload failed: " + errorStorage.message);
-          return;
+          if (errorStorage) {
+            alert("Image upload failed: " + errorStorage.message);
+            return;
+          }
+
+          const { data: publicURL } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(filePath);
+
+          image_url = publicURL.publicUrl;
         }
 
-        const { data: publicURL } = supabase.storage
-          .from(bucketName)
-          .getPublicUrl(filePath);
-
-        image_url = publicURL.publicUrl;
-
         const { error } = await supabase.from('news&announcements').insert([
-          { image: image_url, title, description, date },
+          { image: image_url, title, description, date, major },
         ]);
 
         if (error) {
