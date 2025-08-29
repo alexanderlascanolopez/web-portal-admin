@@ -164,15 +164,18 @@
           <div class="content-wrapper">
 
             <div class="container-xxl flex-grow-1 container-p-y">
-
                <div class="card mb-4">
                 <h5 class="card-header">Create News or Announcement</h5>
                 <div class="card-body">
                   <form id="newsForm">
                     <div class="mb-3">
-                      <label for="newsImage" class="form-label">Image (Optional)</label>
-                      <input type="file" accept="image/*" class="form-control" id="newsImage"/>
+                      <label for="newsImage" class="form-label">Images (Optional)</label>
+                      <input type="file" accept="image/*" class="form-control" id="newsImage" multiple />
                     </div>
+
+                    <!-- Preview container -->
+                    <div id="create-news-preview" class="d-flex flex-wrap gap-2 mb-3"></div>
+
 
                     <div class="mb-3">
                       <label for="newsTitle" class="form-label">Title</label>
@@ -189,7 +192,6 @@
                       <input type="date" class="form-control" id="newsDate" required />
                     </div>
 
-                    <!-- === Major Select Dropdown === -->
                     <div class="mb-3">
                       <label for="newsMajor" class="form-label">Major (Optional)</label>
                       <select class="form-select" id="newsMajor">
@@ -282,11 +284,9 @@
                     <input type="hidden" id="edit-news-id">
                     <div class="mb-3">
                       <label for="edit-news-image" class="form-label">Image</label>
-                      <input class="form-control" type="file" id="edit-news-image" accept="image/*">
+                      <input class="form-control" type="file" id="edit-news-image" accept="image/*" multiple>
                       <label for="edit-news-preview" class="form-label mt-2">Current Image</label>
-                      <div >
-                        <img id="edit-news-preview" src="" alt="Current Image" class="img-fluid rounded" style="max-height: 200px;">
-                      </div>
+                      <div id="edit-news-preview" class="d-flex flex-wrap">No Image/s</div>
                     </div>
 
                     <div class="mb-3">
@@ -296,6 +296,17 @@
                     <div class="mb-3">
                       <label for="edit-news-description" class="form-label">Description</label>
                       <textarea class="form-control" id="edit-news-description" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="edit-news-major" class="form-label">Major (Optional)</label>
+                      <select class="form-select" id="edit-news-major">
+                        <option value="" disabled selected>Select a Major</option>
+                        <option value="human resources management">Human Resources Management</option>
+                        <option value="marketing management">Marketing Management</option>
+                        <option value="financial management">Financial Management</option>
+                        <option value="business economics">Business Economics</option>
+                        <option value="all">All</option>
+                      </select>
                     </div>
                     <div class="d-flex justify-content-end gap-2">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -332,13 +343,23 @@
                   <h4 id="modal-news-title" class="fw-bold mb-2"></h4>
                   <p class="text-muted mb-2" id="modal-news-date"></p>
                   <p id="modal-news-description" class="mb-3"></p>
-                  <div id="modal-news-image-container" class="text-center d-none">
-                    <img id="modal-news-image" src="" class="img-fluid rounded" alt="News Image">
+
+                  <!-- Bootstrap Carousel -->
+                  <div id="modal-news-carousel" class="carousel slide d-none" data-bs-ride="carousel">
+                    <div class="carousel-indicators"></div>
+                    <div class="carousel-inner"></div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#modal-news-carousel" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#modal-news-carousel" data-bs-slide="next">
+                      <span class="carousel-control-next-icon"></span>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
 
           <div class="modal fade" id="deleteNewsModal" tabindex="-1" aria-labelledby="deleteNewsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -480,13 +501,50 @@
       }
 
       const newsForm = document.getElementById('newsForm');
+      const imageInput = document.getElementById("newsImage");
+      const previewContainer = document.getElementById("create-news-preview");
+
+      let selectedFiles = [];
+
+      imageInput.addEventListener("change", (e) => {
+        const files = Array.from(e.target.files);
+
+        selectedFiles = [...selectedFiles, ...files];
+
+        renderCreatePreview();
+      });
+
+      function renderCreatePreview() {
+        previewContainer.innerHTML = "";
+
+        selectedFiles.forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const div = document.createElement("div");
+            div.classList.add("position-relative");
+
+            div.innerHTML = `
+              <img src="${e.target.result}" class="rounded" style="width:100px; height:100px; object-fit:cover;">
+              <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                onclick="removeCreateImage(${index})">&times;</button>
+            `;
+            previewContainer.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function removeCreateImage(index) {
+        selectedFiles.splice(index, 1);
+        renderCreatePreview();
+      }
+
       newsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const submitBtn = document.getElementById('create-news-submit-btn');
         const spinner = document.getElementById('create-news-spinner');
 
-        // Show loading
         submitBtn.disabled = true;
         spinner.classList.remove('d-none');
 
@@ -494,45 +552,49 @@
         const description = document.getElementById('newsDescription').value;
         const date = document.getElementById('newsDate').value;
         let major = document.getElementById('newsMajor').value == "" ? "all" : document.getElementById('newsMajor').value;
-        const file = document.getElementById("newsImage").files[0];
 
-        let image_url = null;
+        let uploadedImageUrls = [];
 
-        if(file){
-          const bucketName = "news-image";
-          const filePath = `admin/assets/${Date.now()}_${file.name}`;
-          const { data, error: errorStorage } = await supabase.storage
-          .from(bucketName)
-          .upload(filePath, file, {
-            cacheControl: "3600",
-            upsert: false,
-          });
+        for (let file of selectedFiles) {
+          const filePath = `admin/assets/${Date.now()}-${file.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from("news-image")
+            .upload(filePath, file);
 
-          if (errorStorage) {
-            alert("Image upload failed: " + errorStorage.message);
-            return;
+          if (uploadError) {
+            console.error("Upload error:", uploadError.message);
+            continue;
           }
 
-          const { data: publicURL } = supabase.storage
-            .from(bucketName)
+          const { data: publicUrlData } = supabase.storage
+            .from("news-image")
             .getPublicUrl(filePath);
 
-          image_url = publicURL.publicUrl;
+          uploadedImageUrls.push(publicUrlData.publicUrl);
         }
 
-        const { error } = await supabase.from('news&announcements').insert([
-          { image: image_url, title, description, date, major },
+        const { error } = await supabase.from("news&announcements").insert([
+          {
+            title,
+            description,
+            date,
+            major,
+            image: uploadedImageUrls,
+          },
         ]);
 
         if (error) {
-          alert('Error creating news: ' + error.message);
+          console.error("Insert error:", error.message);
         } else {
           newsForm.reset();
+          selectedFiles = [];
+          previewContainer.innerHTML = "";
           fetchNews();
+          showToast("News created successfully.");
         }
 
         submitBtn.disabled = false;
-        spinner.classList.add('d-none');
+        spinner.classList.add("d-none");
       });
 
       function truncateText(text, maxLength) {
@@ -599,11 +661,6 @@
         type === 'news' ? fetchNews() : fetchArchivedNews();
       }
 
-      window.viewNews = function (id) {
-        // Add logic to show full details in modal if needed
-        alert("Viewing news ID: " + id);
-      }
-
       window.archiveNews = async function (id) {
         const { error } = await supabase.from('news&announcements').update({ archive: true }).eq('id', id);
         if (error) {
@@ -623,11 +680,9 @@
         toast.show()
       }
 
-      // Initial fetch
       fetchNews();
       fetchArchivedNews();
 
-      // archiving news
 
       window.unarchiveNews = async function (id) {
         const { error } = await supabase
@@ -648,8 +703,6 @@
         showToast("News unarchived successfully.");
       }
 
-      // viewing news
-
       window.viewNews = async function (id) {
         const { data, error } = await supabase
           .from('news&announcements')
@@ -663,32 +716,69 @@
           return;
         }
 
-        // Populate modal with data
         document.getElementById('modal-news-title').innerText = data.title || 'Untitled';
         document.getElementById('modal-news-date').innerText = new Date(data.date).toLocaleString();
         document.getElementById('modal-news-description').innerText = data.description || '';
 
-        // Optional image handling
-        if (data.image) {
-          document.getElementById('modal-news-image-container').classList.remove('d-none');
-          document.getElementById('modal-news-image').src = data.image;
+        const carouselContainer = document.getElementById('modal-news-carousel');
+        const carouselIndicators = carouselContainer.querySelector('.carousel-indicators');
+        const carouselInner = carouselContainer.querySelector('.carousel-inner');
+
+        const prevBtn = carouselContainer.querySelector('.carousel-control-prev');
+        const nextBtn = carouselContainer.querySelector('.carousel-control-next');
+
+        carouselIndicators.innerHTML = '';
+        carouselInner.innerHTML = '';
+
+        if (data.image && data.image.length > 0) {
+          data.image.forEach((img, index) => {
+            const indicator = document.createElement('button');
+            indicator.type = 'button';
+            indicator.dataset.bsTarget = '#modal-news-carousel';
+            indicator.dataset.bsSlideTo = index;
+            indicator.setAttribute('aria-label', `Slide ${index + 1}`);
+            if (index === 0) indicator.classList.add('active');
+            carouselIndicators.appendChild(indicator);
+
+            const item = document.createElement('div');
+            item.classList.add('carousel-item');
+            if (index === 0) item.classList.add('active');
+
+            const imgEl = document.createElement('img');
+            imgEl.src = img;
+            imgEl.classList.add('d-block', 'w-100', 'rounded');
+            imgEl.alt = `News Image ${index + 1}`;
+
+            item.appendChild(imgEl);
+            carouselInner.appendChild(item);
+          });
+
+          carouselContainer.classList.remove('d-none');
+
+          if (data.image.length > 1) {
+            prevBtn.classList.remove('d-none');
+            nextBtn.classList.remove('d-none');
+          } else {
+            prevBtn.classList.add('d-none');
+            nextBtn.classList.add('d-none');
+          }
         } else {
-          document.getElementById('modal-news-image-container').classList.add('d-none');
+          carouselContainer.classList.add('d-none');
         }
 
-        // Show the modal
         const modal = new bootstrap.Modal(document.getElementById('viewNewsModal'));
         modal.show();
-      }
+      };
 
-      // updating news
+
+      let existingImages = [];
+      let newImages = [];
 
       window.editNews = async function (id) {
-
         const { data, error } = await supabase
-          .from('news&announcements')
-          .select('*')
-          .eq('id', id)
+          .from("news&announcements")
+          .select("*")
+          .eq("id", id)
           .single();
 
         if (error) {
@@ -696,34 +786,111 @@
           return;
         }
 
-        document.getElementById('edit-news-preview').src = data.image || '';
-        document.getElementById('edit-news-image').value = ''; // reset file input
-        document.getElementById('edit-news-id').value = data.id;
-        document.getElementById('edit-news-title').value = data.title || '';
-        document.getElementById('edit-news-description').value = data.description || '';
+        document.getElementById("edit-news-id").value = data.id;
+        document.getElementById("edit-news-title").value = data.title || "";
+        document.getElementById("edit-news-description").value = data.description || "";
+        document.getElementById("edit-news-major").value = data.major || "";
+        document.getElementById("edit-news-image").value = ""; // reset file input
 
-        const modal = new bootstrap.Modal(document.getElementById('editNewsModal'));
+        existingImages = data.image ? [...data.image] : [];
+        newImages = [];
+
+        renderEditPreview();
+
+        const fileInput = document.getElementById("edit-news-image");
+        fileInput.onchange = (e) => {
+          const files = Array.from(e.target.files);
+          newImages = [...newImages, ...files];
+          renderEditPreview();
+        };
+
+        const modal = new bootstrap.Modal(document.getElementById("editNewsModal"));
         modal.show();
       };
 
-      document.getElementById('editNewsForm').addEventListener('submit', async (e) => {
+      function renderEditPreview() {
+        const previewContainer = document.getElementById("edit-news-preview");
+        previewContainer.innerHTML = "";
+
+        existingImages.forEach((img, index) => {
+          const wrapper = document.createElement("div");
+          wrapper.classList.add("position-relative", "m-1");
+
+          const imgEl = document.createElement("img");
+          imgEl.src = img;
+          imgEl.classList.add("img-thumbnail");
+          imgEl.style.width = "120px";
+          imgEl.style.height = "120px";
+          imgEl.style.objectFit = "cover";
+
+          const removeBtn = document.createElement("button");
+          removeBtn.innerHTML = "&times;";
+          removeBtn.classList.add(
+            "btn", "btn-sm", "btn-danger",
+            "position-absolute", "top-0", "end-0"
+          );
+          removeBtn.style.transform = "translate(30%, -30%)";
+          removeBtn.onclick = () => {
+            existingImages.splice(index, 1);
+            renderEditPreview();
+          };
+
+          wrapper.appendChild(imgEl);
+          wrapper.appendChild(removeBtn);
+          previewContainer.appendChild(wrapper);
+        });
+
+        newImages.forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("position-relative", "m-1");
+
+            const imgEl = document.createElement("img");
+            imgEl.src = e.target.result;
+            imgEl.classList.add("img-thumbnail");
+            imgEl.style.width = "120px";
+            imgEl.style.height = "120px";
+            imgEl.style.objectFit = "cover";
+
+            const removeBtn = document.createElement("button");
+            removeBtn.innerHTML = "&times;";
+            removeBtn.classList.add(
+              "btn", "btn-sm", "btn-danger",
+              "position-absolute", "top-0", "end-0"
+            );
+            removeBtn.style.transform = "translate(30%, -30%)";
+            removeBtn.onclick = () => {
+              newImages.splice(index, 1);
+              renderEditPreview();
+            };
+
+            wrapper.appendChild(imgEl);
+            wrapper.appendChild(removeBtn);
+            previewContainer.appendChild(wrapper);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      document.getElementById("editNewsForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const submitBtn = document.getElementById('edit-news-submit-btn');
-        const spinner = document.getElementById('edit-news-spinner');
+        const submitBtn = document.getElementById("edit-news-submit-btn");
+        const spinner = document.getElementById("edit-news-spinner");
 
-        // Show loading
         submitBtn.disabled = true;
-        spinner.classList.remove('d-none');
+        spinner.classList.remove("d-none");
 
         const updatedData = {
-          id: document.getElementById('edit-news-id').value,
-          title: document.getElementById('edit-news-title').value.trim(),
-          description: document.getElementById('edit-news-description').value.trim(),
+          id: document.getElementById("edit-news-id").value,
+          title: document.getElementById("edit-news-title").value.trim(),
+          description: document.getElementById("edit-news-description").value.trim(),
+          major: document.getElementById("edit-news-major").value.trim(),
         };
 
-        const file = document.getElementById("edit-news-image").files[0];
-        if (file) {
+        let newImageUrls = [];
+        for (let file of newImages) {
           const filePath = `admin/assets/${Date.now()}_${file.name}`;
           const { error: uploadError } = await supabase.storage
             .from("news-image")
@@ -734,37 +901,36 @@
 
           if (uploadError) {
             console.error("Upload failed:", uploadError.message);
-            return;
+            continue;
           }
 
           const { data: publicURL } = supabase.storage
             .from("news-image")
             .getPublicUrl(filePath);
 
-          updatedData.image = publicURL.publicUrl;
+          newImageUrls.push(publicURL.publicUrl);
         }
 
-        if (document.getElementById('edit-news-preview').src) {
-          deleteImage(document.getElementById('edit-news-preview').src);
-        }
+        updatedData.image = [...existingImages, ...newImageUrls];
 
         const { error } = await supabase
-          .from('news&announcements')
+          .from("news&announcements")
           .update(updatedData)
-          .eq('id', updatedData.id);
+          .eq("id", updatedData.id);
 
         if (error) {
           alert("Failed to update news.");
+          submitBtn.disabled = false;
+          spinner.classList.add("d-none");
           return;
         }
 
         submitBtn.disabled = false;
-        spinner.classList.add('d-none');
+        spinner.classList.add("d-none");
 
-        // Close modal and refresh
-        bootstrap.Modal.getInstance(document.getElementById('editNewsModal')).hide();
-        fetchNews();          // refresh normal table
-        fetchArchivedNews();  // refresh archived table
+        bootstrap.Modal.getInstance(document.getElementById("editNewsModal")).hide();
+        fetchNews();
+        fetchArchivedNews();
         showToast("News updated successfully.");
       });
 
@@ -790,7 +956,6 @@
         return parts.length > 1 ? parts[1] : null;
       }
 
-      //deleting news
       let deleteTarget = { id: null, type: '' };
 
       window.confirmDelete = function (type, id, image_url) {
