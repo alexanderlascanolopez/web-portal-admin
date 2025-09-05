@@ -36,6 +36,60 @@
       .swal2-container {
         z-index: 20000 !important;
       }
+      .preview-box {
+        width: 150px;
+        height: 150px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .preview-box img,
+      .preview-box video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 10;
+      }
+      
+      .stacked-container {
+        display: flex;
+      }
+
+      .stacked-media {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #fff;
+        margin-left: -10px;
+        z-index: 1;
+      }
+
+      .stacked-media:first-child {
+        margin-left: 0;
+      }
+
+      @media (max-width: 768px) {
+        .navbar-nav .card-header {
+          display: none;
+        }
+
+        .navbar-nav .nav-item a,
+        .navbar-nav .nav-item i {
+          margin: 0 5px;
+        }
+      }
+
     </style>
   </head>
 
@@ -106,17 +160,17 @@
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
               <div class="navbar-nav align-items-center">
-                <h5 class="card-header">College of Business Administration</h5>
+                <h5 class="card-header ">College of Business Administration</h5>
               </div>
 
               <ul class="navbar-nav flex-row align-items-center ms-auto">
                 <li class="nav-item dropdown"></li>
-                  <a href="https://alexanderlascanolopez.github.io/web-portal/index.html" class="nav-link">visit site</a>
+                  <a href="https://alexanderlascanolopez.github.io/web-portal/index.html" target="_blank" class="nav-link">visit site</a>
                 </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bx bx-bell bx-sm"></i>
-                    <span id="notification-count" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                    <span id="notification-count" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
                     <li class="dropdown-header">Notifications</li>
@@ -172,11 +226,13 @@
                   <form id="event-form">
                     <div class="row g-2">
                       <div class="col-md-3">
-                        <input type="text" id="event-title" class="form-control" placeholder="title" required />
+                        <input type="text" id="event-title" class="form-control" placeholder="Title" required />
                       </div>
-                      <div class="col-md-3">
-                        <input type="file" id="event-image" class="form-control" accept="image/*" placeholder="Image" required />
+                      <div class="col-md-4">
+                        <input type="file" id="event-media" class="form-control d-none" accept="image/*,video/*" multiple />
+                        <label for="event-media" id="file-label" class="form-control text-muted">No file chosen (Image/Video)</label>
                       </div>
+
                       <div class="col-md-3">
                         <button type="submit" class="btn btn-success" id="create-event-submit-btn">
                           <span class="spinner-border spinner-border-sm d-none me-2" id="create-event-spinner" role="status" aria-hidden="true"></span>
@@ -184,6 +240,8 @@
                         </button>
                       </div>
                     </div>
+
+                    <div class="row mt-3" id="preview-container"></div>
                   </form>
                 </div>
 
@@ -223,15 +281,28 @@
                     <div class="modal-body">
                       <form id="edit-event-form" enctype="multipart/form-data">
                         <input type="hidden" id="edit-event-id">
+
                         <div class="mb-3">
                           <label class="form-label">Title</label>
                           <input type="text" id="edit-event-title" class="form-control" required />
                         </div>
+
                         <div class="mb-3">
-                          <label class="form-label">Image (Leave blank to keep current)</label>
-                          <input type="file" id="edit-event-image" class="form-control" accept="image/*" />
+                          <label class="form-label">Media (leave blank to keep current)</label>
+                          <input 
+                            type="file" 
+                            id="edit-event-media" 
+                            class="form-control d-none" 
+                            accept="image/*,video/*" 
+                            multiple
+                          />
+                          <label for="edit-event-media" class="btn btn-outline-success w-100" id="edit-file-label">
+                            No file chosen
+                          </label>
+                          <div id="edit-preview-container" class="row mt-2 g-2"></div>
                         </div>
-                        <button type="submit" class="btn btn-success" id="edit-event-submit-btn">
+
+                        <button type="submit" class="btn btn-success w-100" id="edit-event-submit-btn">
                           <span class="spinner-border spinner-border-sm d-none me-2" id="edit-event-spinner" role="status" aria-hidden="true"></span>
                           Update Event
                         </button>
@@ -327,9 +398,12 @@
       const eventBody = document.getElementById("event-body");
       const eventForm = document.getElementById("event-form");
 
-      // Fetch and display faculty
       async function loadEvent() {
-        const { data, error } = await supabase.from("student_life").select("*").order("id", { ascending: false });
+        const { data, error } = await supabase
+          .from("student_life")
+          .select("*")
+          .order("id", { ascending: false });
+
         if (error) {
           console.error(error);
           return;
@@ -337,10 +411,35 @@
 
         eventBody.innerHTML = "";
         data.forEach(event => {
+          let mediaHtml = "";
+          try {
+            const mediaFiles = Array.isArray(event.media) ? event.media : JSON.parse(event.media);
+
+            mediaFiles.forEach((fileUrl, idx) => {
+              if (fileUrl.match(/\.(mp4|webm|ogg)$/i)) {
+                mediaHtml += `
+                  <video src="${fileUrl}" muted
+                    class="stacked-media rounded-circle"
+                    style="object-fit:cover;"></video>
+                `;
+              } else {
+                mediaHtml += `
+                  <img src="${fileUrl}"
+                    class="stacked-media rounded-circle"
+                    style="object-fit:cover;" />
+                `;
+              }
+            });
+          } catch (err) {
+            console.warn("Invalid media format for event:", event.id, err);
+          }
+
           eventBody.innerHTML += `
             <tr>
               <td>
-                <img src="${event.image}" alt="Avatar" class="rounded-circle" style="width:40px;height:40px;object-fit:cover;" />
+                <div class="stacked-container" style="display:flex;flex-direction: row; justify-content: center;align-items: center">
+                  ${mediaHtml}
+                </div>
               </td>
               <td>${event.title}</td>
               <td>
@@ -349,10 +448,12 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);" onclick="showEditModal(${event.id}, '${event.title}', '${event.image}')">
+                    <a class="dropdown-item" href="javascript:void(0);" 
+                      onclick="showEditModal(${event.id})">
                       <i class="bx bx-edit-alt me-1"></i> Edit
                     </a>
-                    <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="showDeleteModal(${event.id}, '${event.title}', '${event.image}')">
+                    <a class="dropdown-item text-danger" href="javascript:void(0);" 
+                      onclick="showDeleteModal(${event.id}, '${event.title}', '${event.media}')">
                       <i class="bx bx-trash me-1"></i> Delete
                     </a>
                   </div>
@@ -362,60 +463,6 @@
           `;
         });
       }
-
-      // Add new faculty
-      eventForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const submitBtn = document.getElementById('create-event-submit-btn');
-        const spinner = document.getElementById('create-event-spinner');
-
-        // Show loading
-        submitBtn.disabled = true;
-        spinner.classList.remove('d-none');
-
-        const title = document.getElementById("event-title").value;
-        const file = document.getElementById("event-image").files[0];
-
-        let image_url = null;
-
-        const bucketName = "student-life-image";
-        const filePath = `admin/assets/${Date.now()}_${file.name}`;
-
-        const { data, error: errorStorage } = await supabase.storage
-          .from(bucketName)
-          .upload(filePath, file, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        if (errorStorage) {
-          alert("Image upload failed: " + errorStorage.message);
-          submitBtn.disabled = false;
-          spinner.classList.add('d-none');
-          return;
-        }
-
-        const { data: publicURL } = supabase.storage
-          .from(bucketName)
-          .getPublicUrl(filePath);
-
-        image_url = publicURL.publicUrl;
-
-        const { error } = await supabase.from("student_life").insert([{ title, image: image_url }]);
-        if (error) {
-          console.error(error);
-          alert("Error adding Event");
-          submitBtn.disabled = false;
-          spinner.classList.add('d-none');
-          return;
-        }
-        eventForm.reset();
-        loadEvent();
-
-        submitBtn.disabled = false;
-        spinner.classList.add('d-none');
-      });
 
       // Show delete modal
       function showDeleteModal(id, title,image_url) {
@@ -444,7 +491,7 @@
         const modalInstance = bootstrap.Modal.getInstance(modalEl);
         modalInstance.hide();
         loadEvent();
-        showToast("EVent deleted successfully.")
+        showToast("Event deleted successfully.")
       });
 
       async function deleteImage(imagePath) {
@@ -469,63 +516,6 @@
         return parts.length > 1 ? parts[1] : null;
       }
 
-      // deleting Event
-
-       window.showEditModal = function (id, name, image_url) {
-        image = image_url;
-
-        document.getElementById("edit-event-id").value = id;
-        document.getElementById("edit-event-title").value = name;
-        document.getElementById("edit-event-image").value = "";
-        new bootstrap.Modal(document.getElementById("editModal")).show();
-      }
-
-      document.getElementById("edit-event-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const submitBtn = document.getElementById('edit-event-submit-btn');
-        const spinner = document.getElementById('edit-event-spinner');
-
-        // Show loading
-        submitBtn.disabled = true;
-        spinner.classList.remove('d-none');
-
-        const id = document.getElementById("edit-event-id").value;
-        const title = document.getElementById("edit-event-title").value;
-        const file = document.getElementById("edit-event-image").files[0];
-
-        let profileUrl = null;
-        if (file) profileUrl = await uploadImage(file);
-
-        const updateData = { title };
-        if (profileUrl) updateData.image = profileUrl;
-
-        submitBtn.disabled = false;
-        spinner.classList.add('d-none');
-
-        await supabase.from("student_life").update(updateData).eq("id", id); 
-
-        deleteImage(image)
-
-        bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
-        loadEvent();
-      });
-
-      async function uploadImage(file) {
-        const fileName = `admin/assets/${Date.now()}_${file.name}`;
-        const { data, error } = await supabase.storage
-          .from("student-life-image")
-          .upload(fileName, file);
-
-        if (error) throw error;
-
-        const { data: urlData } = supabase.storage
-          .from("student-life-image")
-          .getPublicUrl(fileName);
-
-        return urlData.publicUrl;
-      }
-
       function showToast(message) {
         const toastEl = document.getElementById('deleteToast')
         const toastBody = document.getElementById('deleteToastBody')
@@ -533,6 +523,328 @@
         const toast = new bootstrap.Toast(toastEl)
         toast.show()
       }
+      
+      const form = document.getElementById("event-form");
+      const fileInput = document.getElementById("event-media");
+      const previewContainer = document.getElementById("preview-container");
+      let selectedFiles = [];
+
+      const fileLabel = document.getElementById("file-label");
+
+      fileInput.addEventListener("change", (e) => {
+        const newFiles = Array.from(e.target.files);
+
+        newFiles.forEach((file) => {
+          const isDuplicate = selectedFiles.some(
+            f => f.name === file.name && f.size === file.size
+          );
+          if (isDuplicate) {
+            console.warn(`Duplicate file skipped: ${file.name}`);
+            return;
+          }
+
+          selectedFiles.push(file);
+
+          const col = document.createElement("div");
+          col.className = "col-md-3 mb-2 position-relative d-flex justify-content-center";
+          col.style.cssText = "width: 150px;height:150px"
+
+          const previewBox = document.createElement("div");
+          previewBox.className = "preview-box";
+
+          let mediaPreview;
+          if (file.type.startsWith("image/")) {
+            mediaPreview = document.createElement("img");
+            mediaPreview.src = URL.createObjectURL(file);
+          } else if (file.type.startsWith("video/")) {
+            mediaPreview = document.createElement("video");
+            mediaPreview.src = URL.createObjectURL(file);
+            mediaPreview.controls = true;
+          }
+
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "btn btn-sm btn-danger remove-btn";
+          // removeBtn.style.cssText = "right:80px;";
+          removeBtn.innerHTML = "×";
+          removeBtn.onclick = () => {
+            const idx = selectedFiles.indexOf(file);
+            if (idx > -1) selectedFiles.splice(idx, 1);
+            col.remove();
+            updateFileLabel();
+          };
+
+          previewBox.appendChild(mediaPreview);
+          col.appendChild(previewBox);
+          col.appendChild(removeBtn);
+          previewContainer.appendChild(col);
+        });
+
+        updateFileLabel();
+        fileInput.value = "";
+      });
+
+      function updateFileLabel() {
+        fileLabel.classList.add("text-muted");
+        if (selectedFiles.length === 0) {
+          fileLabel.textContent = "No file chosen";
+        } else if (selectedFiles.length === 1) {
+          fileLabel.textContent = "1 file selected";
+        } else {
+          fileLabel.textContent = `${selectedFiles.length} files selected`;
+        }
+      }
+
+      // Handle form submit
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = document.getElementById("event-title").value.trim();
+        const spinner = document.getElementById("create-event-spinner");
+        spinner.classList.remove("d-none");
+
+        if (selectedFiles.length === 0) {
+          fileLabel.textContent = "Please select file/s !!!";
+          fileLabel.classList.remove("text-muted");
+          fileLabel.style.color = "red";
+          spinner.classList.add("d-none");
+          return;
+        }
+
+        try {
+          let mediaUrls = [];
+
+          // Upload each file to Supabase Storage
+          for (const file of selectedFiles) {
+            const filePath = `admin/assets/${Date.now()}_${file.name}`;
+            const { error: uploadError } = await supabase.storage.from("student-life-image").upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data } = supabase.storage.from("student-life-image").getPublicUrl(filePath);
+            mediaUrls.push(data.publicUrl);
+          }
+
+          const { error: insertError } = await supabase.from("student_life").insert([
+            {
+              title: title,
+              media: mediaUrls, 
+            },
+          ]);
+
+          if (insertError) throw insertError;
+
+          showToast("Event added successfully!")
+          form.reset();
+          previewContainer.innerHTML = "";
+          selectedFiles = [];
+          fileLabel.textContent = "No file chosen";
+          loadEvent();
+        } catch (err) {
+          console.error(err);
+          showToast("Error creating event.")
+        } finally {
+          spinner.classList.add("d-none");
+        }
+      });
+
+      const editForm = document.getElementById("edit-event-form");
+      const editFileInput = document.getElementById("edit-event-media");
+      const editPreviewContainer = document.getElementById("edit-preview-container");
+      const editFileLabel = document.getElementById("edit-file-label");
+      let editSelectedFiles = [];
+      let existingFiles = []; // already stored images/videos
+
+      async function showEditModal(id) {
+        const { data, error } = await supabase
+          .from("student_life")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        document.getElementById("edit-event-id").value = data.id;
+        document.getElementById("edit-event-title").value = data.title;
+
+        editPreviewContainer.innerHTML = "";
+        editSelectedFiles = [];
+
+        existingFiles = data.media ? [...data.media] : [];
+
+        existingFiles.forEach((url, index) => {
+          if (typeof url !== "string") url = String(url);
+
+          const col = document.createElement("div");
+          col.className = "col-md-3 mb-2 position-relative d-flex justify-content-center";
+
+          const previewBox = document.createElement("div");
+          previewBox.className = "preview-box";
+
+          let mediaPreview;
+          if (url.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+            mediaPreview = document.createElement("img");
+            mediaPreview.src = url;
+          } else {
+            mediaPreview = document.createElement("video");
+            mediaPreview.src = url;
+            mediaPreview.controls = true;
+          }
+
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "btn btn-sm btn-danger remove-btn";
+          removeBtn.innerHTML = "×";
+          removeBtn.onclick = () => {
+            existingFiles.splice(index, 1);
+            col.remove();
+          };
+
+          previewBox.appendChild(mediaPreview);
+          col.appendChild(previewBox);
+          col.appendChild(removeBtn);
+          editPreviewContainer.appendChild(col);
+        });
+
+        new bootstrap.Modal(document.getElementById("editModal")).show();
+        updateEditFileLabel();
+      }
+
+      editFileInput.addEventListener("change", (e) => {
+        const newFiles = Array.from(e.target.files);
+
+        newFiles.forEach((file) => {
+          const isDuplicate = editSelectedFiles.some(
+            (f) => f.name === file.name && f.size === file.size
+          );
+          if (isDuplicate) {
+            console.warn(`Duplicate skipped: ${file.name}`);
+            return;
+          }
+
+          editSelectedFiles.push(file);
+
+          const col = document.createElement("div");
+          col.className = "col-md-3 mb-2 position-relative d-flex justify-content-center";
+
+          const previewBox = document.createElement("div");
+          previewBox.className = "preview-box";
+
+          let mediaPreview;
+          if (file.type.startsWith("image/")) {
+            mediaPreview = document.createElement("img");
+            mediaPreview.src = URL.createObjectURL(file);
+          } else if (file.type.startsWith("video/")) {
+            mediaPreview = document.createElement("video");
+            mediaPreview.src = URL.createObjectURL(file);
+            mediaPreview.controls = true;
+          }
+
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "btn btn-sm btn-danger remove-btn";
+          removeBtn.innerHTML = "×";
+          removeBtn.onclick = () => {
+            const idx = editSelectedFiles.indexOf(file);
+            if (idx > -1) editSelectedFiles.splice(idx, 1);
+            col.remove();
+            updateEditFileLabel();
+          };
+
+          previewBox.appendChild(mediaPreview);
+          col.appendChild(previewBox);
+          col.appendChild(removeBtn);
+          editPreviewContainer.appendChild(col);
+        });
+
+        updateEditFileLabel();
+        editFileInput.value = "";
+      });
+
+      function updateEditFileLabel() {
+        editFileLabel.classList.add("text-muted");
+        if (editSelectedFiles.length === 0) {
+          editFileLabel.textContent = "No file chosen (Image/Video)";
+        } else if (editSelectedFiles.length === 1) {
+          editFileLabel.textContent = "1 file selected";
+        } else {
+          editFileLabel.textContent = `${editSelectedFiles.length} files selected`;
+        }
+      }
+
+      async function uploadFilesToSupabase(files) {
+        const uploadedUrls = [];
+
+        for (const file of files) {
+          const filePath = `admin/assets/${Date.now()}_${file.name}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from("student-life-image")
+            .upload(filePath, file, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            continue;
+          }
+
+          const { data } = supabase.storage
+            .from("student-life-image")
+            .getPublicUrl(filePath);
+
+          uploadedUrls.push(data.publicUrl);
+        }
+
+        return uploadedUrls;
+      }
+
+      editForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const id = document.getElementById("edit-event-id").value;
+        const title = document.getElementById("edit-event-title").value;
+        const spinner = document.getElementById("edit-event-spinner");
+        spinner.classList.remove("d-none");
+
+        if (existingFiles.length === 0) {
+          editFileLabel.textContent = "Please select file/s !!!";
+          editFileLabel.classList.remove("text-muted");
+          editFileLabel.style.color = "red";
+          spinner.classList.add("d-none");
+          return;
+        }
+
+        let uploadedUrls = [...existingFiles];
+
+
+        if (editSelectedFiles.length > 0) {
+          const newUploads = await uploadFilesToSupabase(editSelectedFiles);
+          uploadedUrls = [...existingFiles, ...newUploads];
+        }
+
+        const { error } = await supabase
+          .from("student_life")
+          .update({
+            title: title,
+            media: uploadedUrls, // store JSON array
+          })
+          .eq("id", id);
+
+        spinner.classList.add("d-none");
+
+        if (error) {
+          console.error(error);
+          showToast("Error updating event");
+        } else {
+          showToast("Event updated successfully!");
+          bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+          loadEvent();
+        }
+      });
 
       // Initial load
       loadEvent();
